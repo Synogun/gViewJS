@@ -90,10 +90,10 @@
             <div class="breaker m-2"></div>
 
             <div class="row m-2">
-                <button id="btn-new-graph" class="btn btn-sidebar w-100" title="Destroys the current graph and create a new one">
+                <a id="btn-new-graph" href="/" class="btn btn-sidebar w-100" title="Destroys the current graph and create a new one">
                     <img class="icon" src="data/imgs/graph.svg">
                     New Graph
-                </button>
+                </a>
             </div>
             <div class="row m-2">
                 <button id="btn-edit-graph" class="btn btn-sidebar w-100" title="Edits the graph using .txt/.json notation">
@@ -104,13 +104,13 @@
             <div class="row m-2">
                 <button id="btn-import-graph" class="btn btn-sidebar w-100" title="Imports a graph from a .txt/.json file">
                     <img class="icon" src="data/imgs/import.svg">
-                    Import Graph
+                    Import Graph (W.I.P)
                 </button>
             </div>
             <div class="row m-2">
                 <button id="btn-export-graph" class="btn btn-sidebar w-100" title="Exports the graph as a .txt/.json file">
                     <img class="icon" src="data/imgs/export.svg">
-                    Export Graph
+                    Export Graph (W.I.P)
                 </button>
             </div>
 
@@ -190,15 +190,15 @@
                     </div>
                     <div class="row m-2 px-2 align-items-center">
                         <div class="col p-0">
-                            <label for="select-graph-layout" class="col-form-label">Layout's Name</label>
+                            <label for="select-graph-layout" class="col-form-label">Type</label>
                         </div>
                         <div class="col-8 p-0">
                             <select id="select-graph-layout" class="form-select" aria-label="Node's layout select">
-                                <option value="circle"     title="The nodes are positioned on a circle">Circle</option>
-                                <option value="grid"       title="The nodes are positioned in a grid">Grid</option>
-                                <option value="concentric" title="The nodes are positioned in concentric circles">Concentric</option>
-                                <option value="cose"       title="The nodes are positioned using a force-directed algorithm">Cose</option>
-                                <option value="random"     title="The nodes are positioned randomly">Random</option>
+                                <option value="circle"     title="Display the nodes on a circle">Circle</option>
+                                <option value="grid"       title="Display the nodes in a grid">Grid</option>
+                                <option value="concentric" title="Display the nodes in concentric circles">Concentric</option>
+                                <option value="cose"       title="Display the nodes using a force-directed algorithm">Cose</option>
+                                <option value="random"     title="Display the nodes randomly">Random</option>
                             </select>
                         </div>
                     </div>
@@ -224,15 +224,16 @@
                     </div>
                     <div id="grid-layout-properties" class="layout-properties row m-0 align-items-center d-none">
                         <div class="col m-0 p-0">
-                            <div class="row m-2 p-0">
-                                <div class="col-5 p-0">
-                                    <label for="input-grid-rows" class="col-form-label">Rows</label>
-                                    <label for="input-grid-cols" class="col-form-label">| Cols</label>
+                            <div class="row m-2 p-0 align-items-center">
+                                <div class="col-4 p-0">
+                                    <label for="input-grid-rows" class="col-form-label visually-hidden">Rows</label>
+                                    <label for="input-grid-cols" class="col-form-label visually-hidden">Cols</label>
+                                    <span>Rows & Cols</span>
                                 </div>
-                                <div class="col p-0">
+                                <div class="col p-0 mx-1">
                                     <input type="number" class="form-control grid-properties" id="input-grid-rows" value="3" min="1" title="Change the amount of row for the grid layout">
                                 </div>
-                                <div class="col p-0">
+                                <div class="col p-0 mx-1">
                                     <input type="number" class="form-control grid-properties" id="input-grid-cols" value="3" min="1" title="Change the radius of the circle layout">
                                 </div>
                             </div>
