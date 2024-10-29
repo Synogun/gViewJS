@@ -29,6 +29,34 @@ function resetFields() {
     resetNodeFields();
 }
 
+function checkWelcomeBanner(value=null) {
+    if (value !== null) {
+        localStorage.setItem("show-welcome-banner", value);
+        return;
+    }
+
+    let show = localStorage.getItem("show-welcome-banner");
+    if (show === null || show === "true") {
+        localStorage.setItem("show-welcome-banner", true);
+        $("#welcome-banner").removeClass("d-none");
+        return;
+    }
+}
+
+function checkNewsBanner(value=null) {
+    if(value !== null) {
+        localStorage.setItem("show-news-banner", value);
+        return;
+    }
+    
+    let show = localStorage.getItem("show-news-banner");
+    if(show === null || show === "true") {
+        localStorage.setItem("show-news-banner", true);
+        $("#news-banner").removeClass("d-none");
+        return;
+    }
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 // EVENT HANDLERS LEFT COLUMN
@@ -86,6 +114,9 @@ $("document").ready(function () {
 
     // change this after deploying, to use the negation of the actual domain;
     if (!window.location.href.startsWith("https://synogun.github.io/gViewJS/")) $("#is-dev").removeClass("d-none");
+
+    checkWelcomeBanner();
+    checkNewsBanner();
 
     refreshGraph(cy);
     console.log("main.js loaded");
