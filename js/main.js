@@ -85,7 +85,7 @@ $(".grid-properties").change(function () {
 $("document").ready(function () {
 
     // change this after deploying, to use the negation of the actual domain;
-    if(window.location.href.startsWith("http://127.0.0.1")) $("#is-dev").removeClass("d-none");
+    if (!window.location.href.startsWith("https://synogun.github.io/gViewJS/")) $("#is-dev").removeClass("d-none");
 
     refreshGraph(cy);
     console.log("main.js loaded");
