@@ -1,5 +1,5 @@
 // generates the graph and the cytoscape object
-var cy = generateNewGraph(false);
+var thegraph = generateNewGraph(false);
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
@@ -63,11 +63,11 @@ function checkNewsBanner(value=null) {
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-$("#btn-new-graph").click(   function () { cy = newGraph(cy); });
+$("#btn-new-graph").click(   function () { thegraph = newGraph(thegraph); });
 
-$("#btn-center-graph").click(function () { cy = centerGraph(cy); });
-$("#btn-add-node").click(function () { cy = addNode(cy); });
-$("#btn-add-edge").click(function () { cy = addEdge(cy); });
+$("#btn-center-graph").click(function () { thegraph = centerGraph(thegraph); });
+$("#btn-add-node").click(function () { thegraph = addNode(thegraph); });
+$("#btn-add-edge").click(function () { thegraph = addEdge(thegraph); });
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
@@ -78,28 +78,28 @@ $("#btn-add-edge").click(function () { cy = addEdge(cy); });
 // LAYOUT PANEL
 
 $("#select-graph-layout").change(function () {
-    refreshGraphLayout(cy, $(this).val());
+    refreshGraphLayout(thegraph, $(this).val());
     console.log("changed layout to", $(this).val());
 });
 
 $(".circle-properties").change(function () {
-    refreshGraphLayout(cy, "circle");
+    refreshGraphLayout(thegraph, "circle");
     console.log("changed circle layout properties");
 });
 
 $(".grid-properties").change(function () {
-    refreshGraphLayout(cy, "grid");
+    refreshGraphLayout(thegraph, "grid");
     console.log("changed grid layout properties");
 });
 
 // NODES PANEL
 
-// cy.nodes().on("select", function (event) {
+// thegraph.nodes().on("select", function (event) {
 //     $("#graph-properties-panel").addClass("d-none");
 //     $("#node-properties-panel").removeClass("d-none");
 // });
 
-// cy.nodes().on("unselect", function (event) {
+// thegraph.nodes().on("unselect", function (event) {
 //     $("#graph-properties-panel").removeClass("d-none");
 //     $("#node-properties-panel").addClass("d-none");
 // });
@@ -118,6 +118,6 @@ $("document").ready(function () {
     checkWelcomeBanner();
     checkNewsBanner();
 
-    refreshGraph(cy);
+    refreshGraph(thegraph);
     console.log("main.js loaded");
 });

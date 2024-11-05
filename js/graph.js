@@ -83,14 +83,14 @@ function generateNewGraph(dummy_eles = false) {
     });
 }
 
-function newGraph(cy) {
-    cy.destroy();
-    cy = generateNewGraph();
+function newGraph(thegraph) {
+    thegraph.destroy();
+    thegraph = generateNewGraph();
 
     console.log("new graph generated");
-    refreshGraph(cy);
+    refreshGraph(thegraph);
 
-    return cy;
+    return thegraph;
 };
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -99,19 +99,19 @@ function newGraph(cy) {
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-function centerGraph(cy) {
-    let selected = cy.$(":selected");
-    selected.length > 0 ? cy.center(selected) : cy.center();
+function centerGraph(thegraph) {
+    let selected = thegraph.$(":selected");
+    selected.length > 0 ? thegraph.center(selected) : thegraph.center();
 
     console.log("centered graph on", selected.length > 0 ? "selected eles" : "all nodes");
 
-    return cy;
+    return thegraph;
 };
 
-function addNode(cy) {
-    let newNode = { group: "nodes", data: { id: `n${cy.nodes().length}` } };
-    cy.add(newNode);
-    cy.$(`#${newNode.data.id}`).on("select", function (event) {
+function addNode(thegraph) {
+    let newNode = { group: "nodes", data: { id: `n${thegraph.nodes().length}` } };
+    thegraph.add(newNode);
+    thegraph.$(`#${newNode.data.id}`).on("select", function (event) {
         $("#graph-properties-panel").addClass("d-none");
         $("#node-properties-panel").removeClass("d-none");
     }).on("unselect", function (event) {
@@ -119,24 +119,24 @@ function addNode(cy) {
         $("#node-properties-panel").addClass("d-none");
     });
     
-    cy.data("numNodes", cy.nodes().length);
-    refreshGraph(cy);
+    thegraph.data("numNodes", thegraph.nodes().length);
+    refreshGraph(thegraph);
 
     console.log("added node with id", newNode.data.id);
     // console.log(newNode);
 
-    return cy;
+    return thegraph;
 };
 
-function addEdge(cy) {
+function addEdge(thegraph) {
     // let source = $("#edge-source").val();
     // let target = $("#edge-target").val();
     // let weight = $("#edge-weight").val();
 
-    let selected = cy.nodes(":selected");
+    let selected = thegraph.nodes(":selected");
     if (selected.length < 2) {
         console.log("Select at least two nodes");
-        return cy;
+        return thegraph;
     }
 
     // sequential edges
@@ -144,8 +144,8 @@ function addEdge(cy) {
     //     let source = selected[i].id();
     //     let target = selected[(i + 1) % selected.length].id();
         
-    //     let newEdge = { group: "edges", data: { id: `e${cy.edges().length}`, source: source, target: target, weight: 1 } };
-    //     cy.add(newEdge);
+    //     let newEdge = { group: "edges", data: { id: `e${thegraph.edges().length}`, source: source, target: target, weight: 1 } };
+    //     thegraph.add(newEdge);
 
     //     console.log("added edge with source", source, "and target", target);
     //     console.log(newEdge);
@@ -158,8 +158,8 @@ function addEdge(cy) {
             let source = selected[i].id();
             let target = selected[j].id();
             
-            let newEdge = { group: "edges", data: { id: `e${cy.edges().length}`, source: source, target: target, weight: 1 } };
-            cy.add(newEdge);
+            let newEdge = { group: "edges", data: { id: `e${thegraph.edges().length}`, source: source, target: target, weight: 1 } };
+            thegraph.add(newEdge);
     
             console.log("added edge with source", source, "and target", target);
             // console.log(newEdge);
@@ -167,10 +167,10 @@ function addEdge(cy) {
         }
     }
 
-    cy.data("numEdges", cy.edges().length);
-    refreshGraph(cy);
+    thegraph.data("numEdges", thegraph.edges().length);
+    refreshGraph(thegraph);
 
-    return cy;
+    return thegraph;
 };
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -184,7 +184,7 @@ function updateLayoutOptions(layoutName) {
     $(`#${layoutName}-layout-properties`).removeClass("d-none");
 }
 
-function refreshGraphLayout(cy, layout = null) {
+function refreshGraphLayout(thegraph, layout = null) {
     let options = {
         name: layout === null ? $("#select-graph-layout").val() : layout,
         
@@ -228,22 +228,22 @@ function refreshGraphLayout(cy, layout = null) {
         break;
     }
     
-    cy.layout(options).run();
+    thegraph.layout(options).run();
     console.log("refreshed graph layout with", options.name, "layout");
 
-    return cy;
+    return thegraph;
 }
 
-function refreshGraphProps(cy) {
-    $("#input-node-count").val(cy.data("numNodes") + " nodes");
-    $("#input-edge-count").val(cy.data("numEdges") + " edges");
+function refreshGraphProps(thegraph) {
+    $("#input-node-count").val(thegraph.data("numNodes") + " nodes");
+    $("#input-edge-count").val(thegraph.data("numEdges") + " edges");
 }
 
-function refreshGraph(cy) {
-    refreshGraphLayout(cy);
-    refreshGraphProps(cy);
+function refreshGraph(thegraph) {
+    refreshGraphLayout(thegraph);
+    refreshGraphProps(thegraph);
 
-    return cy;
+    return thegraph;
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -256,7 +256,7 @@ $(document).ready(function () {
     console.log("graph.js loaded");
 
     // setInterval(() => {
-    //     console.log("selected nodes", cy.nodes(":selected"), "\nselected edges", cy.edges(":selected"));
-    //     // console.log("selected edges", cy.edges(":selected"));
+    //     console.log("selected nodes", thegraph.nodes(":selected"), "\nselected edges", thegraph.edges(":selected"));
+    //     // console.log("selected edges", thegraph.edges(":selected"));
     // }, 1000);
 });
