@@ -7,14 +7,14 @@
 function generateNewGraph(dummy_eles = false) {
     let dummy = [ // list of graph elements to start with
         // nodes
-        { data: { id: 'n0' } },
-        { data: { id: 'n1' } },
-        { data: { id: 'n2' } },
+        { data: { id: 'n0' }, classes: [], },
+        { data: { id: 'n1' }, classes: [], },
+        { data: { id: 'n2' }, classes: [], },
 
         // edges
-        { data: { id: 'e0', source: 'n0', target: 'n1', weight: 1 }, classes: ["directed"] },
-        { data: { id: 'e1', source: 'n0', target: 'n2', weight: 1 }, classes: ["directed"] },
-        { data: { id: 'e2', source: 'n1', target: 'n2', weight: 1 }, classes: ["directed"] },
+        { data: { id: 'e0', source: 'n0', target: 'n1', weight: 1 }, classes: ["directed"], },
+        { data: { id: 'e1', source: 'n0', target: 'n2', weight: 10 }, classes: ["directed"], },
+        { data: { id: 'e2', source: 'n1', target: 'n2', weight: 1 }, classes: ["directed"], },
     ];
     
     return cytoscape({
@@ -28,6 +28,10 @@ function generateNewGraph(dummy_eles = false) {
                 selector: 'node',
                 style: {
                     'label': 'data(id)',
+
+                    'font-family': 'Fira Code, sans-serif',
+                    'text-halign': 'center',
+                    'text-valign': 'center',
                 }
             },
             {
@@ -44,6 +48,15 @@ function generateNewGraph(dummy_eles = false) {
                     'line-color': '#ccc',
                     'curve-style': 'bezier',
 
+                    'font-family': 'Fira Code, sans-serif',
+                    'color': '#fff',
+                    'text-outline-color': '#000',
+                    'text-outline-width': 1,
+                }
+            },
+            {
+                selector: 'edge[weight > 1]',
+                style: {
                     'label': 'data(weight)',
                 }
             },
@@ -85,12 +98,7 @@ function generateNewGraph(dummy_eles = false) {
 
 function newGraph(thegraph) {
     thegraph.destroy();
-    thegraph = generateNewGraph();
-
-    console.log("new graph generated");
-    refreshGraph(thegraph);
-
-    return thegraph;
+    window.location.reload();
 };
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,5 +1,5 @@
 // generates the graph and the cytoscape object
-var thegraph = generateNewGraph(false);
+var thegraph = generateNewGraph(true);
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
@@ -7,12 +7,22 @@ var thegraph = generateNewGraph(false);
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+function checkDevelopment() {
+    if (window.location.href.startsWith("https://synogun.github.io/gViewJS/")) return;
+
+    $("#is-dev").removeClass("d-none");
+    $("title").text("gViewJS - Development");
+}
+
 /// FINISH CHECKING AND ADDING FIELD VALUES
 function resetLayoutFields() {
+    // default layout
     $("#select-graph-layout").val("circle");
 
+    // default circle layout
     $("#input-circle-radius").val(100);
 
+    // default grid layout
     $("#input-grid-rows").val(3);
     $("#input-grid-cols").val(3);
     $("#input-grid-condense").val(false);
@@ -29,41 +39,13 @@ function resetFields() {
     resetNodeFields();
 }
 
-function checkWelcomeBanner(value=null) {
-    if (value !== null) {
-        localStorage.setItem("show-welcome-banner", value);
-        return;
-    }
-
-    let show = localStorage.getItem("show-welcome-banner");
-    if (show === null || show === "true") {
-        localStorage.setItem("show-welcome-banner", true);
-        $("#welcome-banner").removeClass("d-none");
-        return;
-    }
-}
-
-function checkNewsBanner(value=null) {
-    if(value !== null) {
-        localStorage.setItem("show-news-banner", value);
-        return;
-    }
-    
-    let show = localStorage.getItem("show-news-banner");
-    if(show === null || show === "true") {
-        localStorage.setItem("show-news-banner", true);
-        $("#news-banner").removeClass("d-none");
-        return;
-    }
-}
-
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 // EVENT HANDLERS LEFT COLUMN
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-$("#btn-new-graph").click(   function () { thegraph = newGraph(thegraph); });
+$("#btn-new-graph").click(function () { thegraph = newGraph(thegraph); });
 
 $("#btn-center-graph").click(function () { thegraph = centerGraph(thegraph); });
 $("#btn-add-node").click(function () { thegraph = addNode(thegraph); });
@@ -107,17 +89,16 @@ $(".grid-properties").change(function () {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 // READY FUNCTION
+// MAIN PIPELINE
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 $("document").ready(function () {
 
-    // change this after deploying, to use the negation of the actual domain;
-    if (!window.location.href.startsWith("https://synogun.github.io/gViewJS/")) $("#is-dev").removeClass("d-none");
-
-    checkWelcomeBanner();
-    checkNewsBanner();
+    checkDevelopment();
 
     refreshGraph(thegraph);
     console.log("main.js loaded");
 });
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

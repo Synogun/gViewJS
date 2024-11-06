@@ -22,7 +22,10 @@
 
 <body>
     <div id="loader-wrapper" class="bg-white position-fixed top-0 z-3 w-100 h-100 text-center">
-        <div class="spinner-border mt-5" role="status">
+        <div class="mt-5" role="status">
+            <h1>Loading...</h1>
+        </div>
+        <div class="spinner-border mt-3" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
     </div>
@@ -67,18 +70,6 @@
         </div>
     </nav> -->
 
-    <div id="welcome-banner" class="alert alert-primary alert-dismissible fade show m-1 d-none" role="alert">
-        <strong>Welcome to gView JS!</strong> This is an online graph manipulator/visualizer. You can create your
-        own graph, add nodes and edges, and manipulate them as you like. Have fun!
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="checkWelcomeBanner(false)"></button>
-    </div>
-
-    <div id="news-banner" class="alert alert-warning alert-dismissible fade show m-1 d-none" role="alert">
-        <strong>Announcement:</strong> This is a beta version of gView JS. Please report any bugs or issues you
-        encounter. Thank you!
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="checkNewsBanner(false)"></button>
-    </div>
-
     <div id="page" class="row w-100 h-100 g-0">
         <div id="left-col" class="col text-center">
             <div class="row m-0 p-0">
@@ -90,10 +81,10 @@
             <div class="breaker m-2"></div>
 
             <div class="row m-2">
-                <a id="btn-new-graph" href="https://synogun.github.io/gViewJS/" class="btn btn-sidebar w-100" title="Destroys the current graph and create a new one">
+                <button id="btn-new-graph" class="btn btn-sidebar w-100" title="Destroys the current graph and create a new one">
                     <img class="icon" src="data/imgs/graph.svg">
                     New Graph
-                </a>
+                </button>
             </div>
             <div class="row m-2">
                 <button id="btn-edit-graph" class="btn btn-sidebar w-100" title="Edits the graph using .txt/.json notation">
@@ -279,7 +270,7 @@
                     </div>
                     <div class="col p-0">
                         <select id="select-node-shape" class="form-select" aria-label="Node's layout select">
-                            <option value="ellipse"                title="Change the node(s) shape to a ellipse">Ellipse</option>
+                            <option value="ellipse"                title="Change the node(s) shape to a ellipse" selected>Ellipse</option>
                             <option value="triangle"               title="Change the node(s) shape to a triangle">Triangle</option>
                             <option value="round-triangle"         title="Change the node(s) shape to a rounded triangle">Round Triangle</option>
                             <option value="rectangle"              title="Change the node(s) shape to a rectangle">Rectangle</option>
