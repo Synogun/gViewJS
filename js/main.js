@@ -1,6 +1,6 @@
 // generates the graph and the cytoscape object
 var isDev = false;
-var thegraph = generateNewGraph();
+var thegraph = generateNewGraph(false);
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //

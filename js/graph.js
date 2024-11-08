@@ -4,24 +4,12 @@
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-function generateNewGraph(dummy_eles = false) {
-    let dummy = [ // list of graph elements to start with
-        // nodes
-        { data: { id: 'n0' }, classes: [], },
-        { data: { id: 'n1' }, classes: [], },
-        { data: { id: 'n2' }, classes: [], },
-
-        // edges
-        { data: { id: 'e0', source: 'n0', target: 'n1', weight: 1 }, classes: ["directed"], },
-        { data: { id: 'e1', source: 'n0', target: 'n2', weight: 1 }, classes: ["directed"], },
-        { data: { id: 'e2', source: 'n1', target: 'n2', weight: 1 }, classes: ["directed"], },
-    ];
-    
+function generateNewGraph() {
     return cytoscape({
         container: $('#graph'), // container to render in
         
-        elements: dummy_eles ? dummy : [], // elements to render
-        data: dummy_eles ? { numNodes: 3, numEdges: 3 } : { numNodes: 0, numEdges: 0 },
+        elements: [], // elements to render
+        data: { numNodes: 0, numEdges: 0 },
     
         style: [ // the stylesheet for the graph
             {
@@ -105,7 +93,7 @@ function generateNewGraph(dummy_eles = false) {
         }
     
     });
-}
+};
 
 function newGraph(thegraph) {
     window.location.reload();
@@ -117,7 +105,7 @@ function arrangeGraph(thegraph) {
 
     console.log("arranged graph");
     return thegraph;
-}
+};
 
 function centerGraph(thegraph) {
     let selected = thegraph.$(":selected");
@@ -258,7 +246,7 @@ function refreshGraphLayout(thegraph, layout = null) {
         default:
             // no additional options
         break;
-    }
+    };
     
     thegraph.layout(options).run();
     console.log("refreshed graph layout with", options.name, "layout");
