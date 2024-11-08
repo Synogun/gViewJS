@@ -13,7 +13,7 @@ function generateNewGraph(dummy_eles = false) {
 
         // edges
         { data: { id: 'e0', source: 'n0', target: 'n1', weight: 1 }, classes: ["directed"], },
-        { data: { id: 'e1', source: 'n0', target: 'n2', weight: 10 }, classes: ["directed"], },
+        { data: { id: 'e1', source: 'n0', target: 'n2', weight: 1 }, classes: ["directed"], },
         { data: { id: 'e2', source: 'n1', target: 'n2', weight: 1 }, classes: ["directed"], },
     ];
     
@@ -27,7 +27,9 @@ function generateNewGraph(dummy_eles = false) {
             {
                 selector: 'node',
                 style: {
-                    'label': 'data(id)',
+                    'label': 'data(label)',
+                    'background-color': 'data(color)',
+                    'shape': 'data(shape)',
 
                     'font-family': 'Fira Code, sans-serif',
                     'text-halign': 'center',
@@ -37,6 +39,15 @@ function generateNewGraph(dummy_eles = false) {
             {
                 selector: 'node:active',
                 style: {
+                    'background-color': '#0169d9',
+                    'border-color': '#0169d9',
+                    'border-width': 2,
+                }
+            },
+            {
+                selector: 'node:selected',
+                style: {
+                    'background-color': 'data(color)',
                     'border-color': '#0169d9',
                     'border-width': 2,
                 }
@@ -97,8 +108,23 @@ function generateNewGraph(dummy_eles = false) {
 }
 
 function newGraph(thegraph) {
-    thegraph.destroy();
     window.location.reload();
+};
+
+function arrangeGraph(thegraph) {
+    let selected = thegraph.$(":selected");
+    selected.length > 0 ? selected.layout().run() : thegraph.layout().run();
+
+    console.log("arranged graph");
+    return thegraph;
+}
+
+function centerGraph(thegraph) {
+    let selected = thegraph.$(":selected");
+    selected.length > 0 ? thegraph.center(selected) : thegraph.center();
+
+    console.log("centered graph on", selected.length > 0 ? "selected eles" : "all nodes");
+    return thegraph;
 };
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -107,25 +133,19 @@ function newGraph(thegraph) {
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-function centerGraph(thegraph) {
-    let selected = thegraph.$(":selected");
-    selected.length > 0 ? thegraph.center(selected) : thegraph.center();
-
-    console.log("centered graph on", selected.length > 0 ? "selected eles" : "all nodes");
-
-    return thegraph;
-};
-
 function addNode(thegraph) {
-    let newNode = { group: "nodes", data: { id: `n${thegraph.nodes().length}` } };
+    let newId = `n${thegraph.nodes().length}`;
+    let newNode = { 
+        group: "nodes",
+        data: { 
+            id: newId,
+            label: newId,
+            color: '#999999',
+            shape: "ellipse",
+        }
+    };
+
     thegraph.add(newNode);
-    thegraph.$(`#${newNode.data.id}`).on("select", function (event) {
-        $("#graph-properties-panel").addClass("d-none");
-        $("#node-properties-panel").removeClass("d-none");
-    }).on("unselect", function (event) {
-        $("#graph-properties-panel").removeClass("d-none");
-        $("#node-properties-panel").addClass("d-none");
-    });
     
     thegraph.data("numNodes", thegraph.nodes().length);
     refreshGraph(thegraph);
@@ -204,31 +224,35 @@ function refreshGraphLayout(thegraph, layout = null) {
     // get correct options based on the selected layout
     switch(options.name) {
         case "circle":
-            updateLayoutOptions("circle");
             options.radius = parseInt($("#input-circle-radius").val());
             // options.sweep = parseFloat($("#input-circle-sweep").val());
+            updateLayoutOptions("circle");
         break;
 
         case "grid":
+            options.condense =      $("#input-grid-condensed").is(":checked");
+            options.spacingFactor = $("#input-grid-condensed").is(":checked") ? 1.5 : 0;
+            options.rows =          $("#input-grid-rows").val();
+            options.cols =          $("#input-grid-cols").val();
             updateLayoutOptions("grid");
-            options.condense = $("#input-grid-condense").is(":checked");
-            options.spacingFactor = $("#input-grid-condense").is(":checked") ? 1.5 : 0;
-            options.rows =     $("#input-grid-rows").val();
-            options.cols =     $("#input-grid-cols").val();
         break;
 
         case "concentric":
-            updateLayoutOptions("concentric");
             options.minNodeSpacing = 50;
+            updateLayoutOptions("concentric");
         break;
 
         case "cose":
             updateLayoutOptions("cose");
         break;
 
-        case "random":
-            updateLayoutOptions("random");
+        case "preset":
             // no additional options
+            updateLayoutOptions("preset");
+
+        case "random":
+            // no additional options
+            updateLayoutOptions("random");
         break;
 
         default:
@@ -254,6 +278,29 @@ function refreshGraph(thegraph) {
     return thegraph;
 }
 
+function updateNodeProps(thegraph) {
+    let selected = thegraph.nodes(":selected");
+    if (selected.length == 0) {
+        console.log("Select at least one node");
+        return thegraph;
+    }
+
+    let labels = $("#input-node-label").val().split("; ");
+    let color = $("#input-node-color").val();
+    let shape = $("#select-node-shape").val();
+
+    selected.map((ele, i) => {
+        ele.data("label", labels[i].trim());
+        ele.data("color", color);
+        ele.data("shape", shape);
+    });
+
+    refreshGraph(thegraph);
+    console.log("updated", selected.length, "node(s) with new properties");
+
+    return thegraph;
+};
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 // READY FUNCTION
@@ -261,7 +308,6 @@ function refreshGraph(thegraph) {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 $(document).ready(function () {
-    console.log("graph.js loaded");
 
     // setInterval(() => {
     //     console.log("selected nodes", thegraph.nodes(":selected"), "\nselected edges", thegraph.edges(":selected"));

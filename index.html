@@ -87,12 +87,6 @@
                 </button>
             </div>
             <div class="row m-2">
-                <button id="btn-edit-graph" class="btn btn-sidebar w-100" title="Edits the graph using .txt/.json notation">
-                    <img class="icon" src="data/imgs/edit.svg">
-                    Edit Graph
-                </button>
-            </div>
-            <div class="row m-2">
                 <button id="btn-import-graph" class="btn btn-sidebar w-100" title="Imports a graph from a .txt/.json file">
                     <img class="icon" src="data/imgs/import.svg">
                     Import Graph (W.I.P)
@@ -107,6 +101,12 @@
 
             <div class="breaker m-2"></div>
 
+            <div class="row m-2">
+                <button id="btn-arrange-graph" class="btn btn-sidebar w-100" title="Rearranges the graph">
+                    <img class="icon" src="data/imgs/rearrange.svg">
+                    Arrange Graph
+                </button>
+            </div>
             <div class="row m-2">
                 <button id="btn-center-graph" class="btn btn-sidebar w-100" title="Centers on the graph or selected element(s)">
                     <img class="icon" src="data/imgs/center-focus.svg">
@@ -148,12 +148,13 @@
             <div class="row p-0 mx-0">
                 <h3 class="my-1">Properties</h3>
             </div>
+
             
-            <div id="graph-properties-panel" class="m-0 p-0">
+            <div id="graph-properties-panel" class="panel m-0 p-0">
                 <div class="breaker m-2"></div>
                 
                 <div class="row p-0 mx-0">
-                    <h5 class="my-1">Statistics</h5>
+                    <h5 class="my-1">Info</h5>
                 </div>
 
                 <div class="row m-2 px-2 align-items-center">
@@ -172,76 +173,77 @@
                         <input type="text" class="form-control" id="input-edge-count" value="0 edges" title="Displays the total edge count of the graph" disabled readonly>
                     </div>
                 </div>
-
-                <div class="breaker m-2"></div>
+            </div>
                 
-                <div id="layout-properties-panel" class="m-0 p-0">
-                    <div class="row p-0 mx-0">
-                        <h5 class="my-1">Layout</h5>
+            <div id="layout-properties-panel" class="panel m-0 p-0">
+                <div class="breaker m-2"></div>
+
+                <div class="row p-0 mx-0">
+                    <h5 class="my-1">Layout</h5>
+                </div>
+                <div class="row m-2 px-2 align-items-center">
+                    <div class="col p-0">
+                        <label for="select-graph-layout" class="col-form-label">Type</label>
                     </div>
-                    <div class="row m-2 px-2 align-items-center">
-                        <div class="col p-0">
-                            <label for="select-graph-layout" class="col-form-label">Type</label>
-                        </div>
-                        <div class="col-8 p-0">
-                            <select id="select-graph-layout" class="form-select" aria-label="Node's layout select">
-                                <option value="circle"     title="Display the nodes on a circle">Circle</option>
-                                <option value="grid"       title="Display the nodes in a grid">Grid</option>
-                                <option value="concentric" title="Display the nodes in concentric circles">Concentric</option>
-                                <option value="cose"       title="Display the nodes using a force-directed algorithm">Cose</option>
-                                <option value="random"     title="Display the nodes randomly">Random</option>
-                            </select>
-                        </div>
+                    <div class="col-8 p-0">
+                        <select id="select-graph-layout" class="form-select" aria-label="Node's layout select">
+                            <option value="circle"     title="Display the nodes on a circle">Circle</option>
+                            <option value="grid"       title="Display the nodes in a grid">Grid</option>
+                            <option value="concentric" title="Display the nodes in concentric circles">Concentric</option>
+                            <option value="cose"       title="Display the nodes using a force-directed algorithm">Cose</option>
+                            <option value="preset"     title="Display the nodes in preset positions">Preset</option>
+                            <option value="random"     title="Display the nodes randomly">Random</option>
+                        </select>
                     </div>
-                    <div id="circle-layout-properties" class="layout-properties row m-0 align-items-center d-none">
-                        <div class="col m-0 p-0">
-                            <div class="row m-2 px-2">
-                                <div class="col p-0">
-                                    <label for="input-circle-radius" class="col-form-label">Radius</label>
-                                </div>
-                                <div class="col-8 p-0">
-                                    <input type="number" class="form-control circle-properties" id="input-circle-radius" value="100" min="10" title="Change the radius of the circle layout">
-                                </div>
+                </div>
+                <div id="circle-layout-properties" class="layout-properties row m-0 align-items-center d-none">
+                    <div class="col m-0 p-0">
+                        <div class="row m-2 px-2">
+                            <div class="col p-0">
+                                <label for="input-circle-radius" class="col-form-label">Radius</label>
                             </div>
-                            <!-- <div class="row m-2 p-0">
-                                <div class="col p-0">
-                                    <label for="input-circle-sweep" class="col-form-label">Sweep</label>
-                                </div>
-                                <div class="col-8 p-0">
-                                    <input type="range" class="form-range circle-properties" id="input-circle-sweep" value="5.7595865316" max="5.7595865316" min="0.0174532925" step="0.0174532925" title="The radius of the circle layout">
-                                </div>
-                            </div> -->
-                        </div>
-                    </div>
-                    <div id="grid-layout-properties" class="layout-properties row m-0 align-items-center d-none">
-                        <div class="col m-0 p-0">
-                            <div class="row m-2 p-0 align-items-center">
-                                <div class="col-4 p-0">
-                                    <label for="input-grid-rows" class="col-form-label visually-hidden">Rows</label>
-                                    <label for="input-grid-cols" class="col-form-label visually-hidden">Cols</label>
-                                    <span>Rows & Cols</span>
-                                </div>
-                                <div class="col p-0 mx-1">
-                                    <input type="number" class="form-control grid-properties" id="input-grid-rows" value="3" min="1" title="Change the amount of row for the grid layout">
-                                </div>
-                                <div class="col p-0 mx-1">
-                                    <input type="number" class="form-control grid-properties" id="input-grid-cols" value="3" min="1" title="Change the radius of the circle layout">
-                                </div>
+                            <div class="col-8 p-0">
+                                <input type="number" class="form-control circle-properties" id="input-circle-radius" value="100" min="10" title="Change the radius of the circle layout">
                             </div>
-                            <div class="row m-2 p-0 align-items-center">
-                                <div class="col">
-                                    <label for="input-grid-condensed" class="col-form-label">Condensed</label>
-                                </div>
-                                <div class="col">
-                                    <input type="checkbox" class="form-check-input grid-properties" id="input-grid-condense" title="Whether the grid layout is condensed">
-                                </div>
+                        </div>
+                        <!-- <div class="row m-2 p-0">
+                            <div class="col p-0">
+                                <label for="input-circle-sweep" class="col-form-label">Sweep</label>
+                            </div>
+                            <div class="col-8 p-0">
+                                <input type="range" class="form-range circle-properties" id="input-circle-sweep" value="5.7595865316" max="5.7595865316" min="0.0174532925" step="0.0174532925" title="The radius of the circle layout">
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+                <div id="grid-layout-properties" class="layout-properties row m-0 align-items-center d-none">
+                    <div class="col m-0 p-0">
+                        <div class="row m-2 p-0 align-items-center">
+                            <div class="col-4 p-0">
+                                <label for="input-grid-rows" class="col-form-label visually-hidden">Rows</label>
+                                <label for="input-grid-cols" class="col-form-label visually-hidden">Cols</label>
+                                <span>Rows & Cols</span>
+                            </div>
+                            <div class="col p-0 mx-1">
+                                <input type="number" class="form-control grid-properties" id="input-grid-rows" value="3" min="1" title="Change the amount of row for the grid layout">
+                            </div>
+                            <div class="col p-0 mx-1">
+                                <input type="number" class="form-control grid-properties" id="input-grid-cols" value="3" min="1" title="Change the radius of the circle layout">
+                            </div>
+                        </div>
+                        <div class="row m-2 p-0 align-items-center">
+                            <div class="col">
+                                <label for="input-grid-condensed" class="col-form-label">Condensed</label>
+                            </div>
+                            <div class="col">
+                                <input type="checkbox" class="form-check-input grid-properties" id="input-grid-condensed" title="Whether the grid layout is condensed">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="node-properties-panel" class="m-0 p-0 d-none">
+            <div id="node-properties-panel" class="panel m-0 p-0 d-none">
                 <div class="breaker m-2"></div>
                 
                 <div class="row p-0 mx-0">
@@ -249,12 +251,13 @@
                 </div>
 
                 <div class="row m-2 p-0 align-items-center">
-                    <div class="col-4 p-0">
-                        <label for="input-node-label" class="col-form-label">Label(s)</label>
-                    </div>
                     <div class="col p-0">
-                        <input type="text" class="form-control" id="input-node-label" title="Change the label(s) of the selected node(s). Semicolon separated">
+                        <label for="input-node-label" class="col-form-label">Label(s)</label>
+                        <textarea id="input-node-label" class="form-control" aria-label="With textarea"></textarea>
                     </div>
+                    <!-- <div class="col p-0">
+                        <input type="text" class="form-control" id="input-node-label" title="Change the label(s) of the selected node(s). Semicolon separated">
+                    </div> -->
                 </div>
                 <div class="row m-2 p-0 align-items-center">
                     <div class="col-4 p-0">
