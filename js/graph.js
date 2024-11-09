@@ -1,6 +1,6 @@
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
-// GRAPH FUNCTIONS
+// BTNS FUNCTIONS
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -99,14 +99,6 @@ function newGraph(thegraph) {
     window.location.reload();
 }
 
-function arrangeGraph(thegraph) {
-    let selected = thegraph.$(":selected");
-    selected.length > 0 ? selected.layout().run() : thegraph.layout().run();
-
-    console.log("arranged graph");
-    return thegraph;
-}
-
 function centerGraph(thegraph) {
     let selected = thegraph.$(":selected");
     selected.length > 0 ? thegraph.center(selected) : thegraph.center();
@@ -122,25 +114,22 @@ function centerGraph(thegraph) {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 function addNode(thegraph) {
-    let newId = `n${thegraph.nodes().length + thegraph.data("removedNodes").length}`;
-    let newNode = { 
+    let newId = thegraph.nodes().length + thegraph.data("removedNodes").length;
+
+    // TODO: add more properties
+    // TODO: change this to default node properties from settings instead of hardcoding
+    thegraph.add({
         group: "nodes",
-        data: { 
-            id: newId,
+        data: {
+            id: `node-${newId}`,
             label: newId,
             color: '#999999',
             shape: "ellipse",
         }
-    };
-
-    thegraph.add(newNode);
+    });
     
     thegraph.data("numNodes", thegraph.nodes().length);
-    refreshGraph(thegraph);
-
-    console.log("added node with id", newNode.data.id);
-    // console.log(newNode);
-
+    console.log(`added node with id 'node-${newId}' and label '${newId}'`);
     return thegraph;
 }
 
@@ -157,8 +146,6 @@ function removeNode(thegraph) {
     });
     thegraph.data("numNodes", thegraph.nodes().length);
     thegraph.data("numEdges", thegraph.edges().length);
-
-    refreshGraph(thegraph);
 
     console.log("removed", selected.length, "node(s)");
     return thegraph;
@@ -190,18 +177,22 @@ function addEdge(thegraph) {
             let source = selected[i].id();
             let target = selected[j].id();
             
-            let newEdge = { group: "edges", data: { id: `e${thegraph.edges().length}`, source: source, target: target, weight: 1 } };
-            thegraph.add(newEdge);
-    
-            console.log("added edge with source", source, "and target", target);
-            // console.log(newEdge);
+            let newEdge = { 
+                group: "edges",
+                data: { 
+                    id: `edge-${thegraph.edges().length}`,
+                    source: source,
+                    target: target,
+                    weight: 1,
+                } 
+            };
 
+            thegraph.add(newEdge);
+            console.log("added edge with source", source, "and target", target);
         }
     }
 
     thegraph.data("numEdges", thegraph.edges().length);
-    refreshGraph(thegraph);
-
     return thegraph;
 }
 
@@ -211,133 +202,93 @@ function addEdge(thegraph) {
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-function updateLayoutOptions(layoutName) {
-    $(".layout-properties").addClass("d-none");
-    $(`#${layoutName}-layout-properties`).removeClass("d-none");
-}
-
-function refreshGraphLayout(thegraph, layout = null) {
-    let options = {
-        name: layout === null ? $("#select-graph-layout").val() : layout,
-        
-        animate: true,
-        animationDuration: 500,
-        animationEasing: 'ease-in-out',
-    };
-
-    // get correct options based on the selected layout
-    switch(options.name) {
-        case "circle":
-            options.radius = parseInt($("#input-circle-radius").val());
-            // options.sweep = parseFloat($("#input-circle-sweep").val());
-            updateLayoutOptions("circle");
-        break;
-
-        case "grid":
-            options.condense =      $("#input-grid-condensed").is(":checked");
-            options.spacingFactor = $("#input-grid-condensed").is(":checked") ? 1.5 : 0;
-            options.rows =          $("#input-grid-rows").val();
-            options.cols =          $("#input-grid-cols").val();
-            updateLayoutOptions("grid");
-        break;
-
-        case "concentric":
-            options.minNodeSpacing = 50;
-            updateLayoutOptions("concentric");
-        break;
-
-        case "cose":
-            updateLayoutOptions("cose");
-        break;
-
-        case "preset":
-            // no additional options
-            updateLayoutOptions("preset");
-        break;
-
-        case "random":
-            // no additional options
-            updateLayoutOptions("random");
-        break;
-
-        default:
-            // no additional options
-        break;
-    };
+function refreshGraphLayout(thegraph, layout) {
+    thegraph.layout(layout).run();
     
-    thegraph.layout(options).run();
-    console.log("refreshed graph layout with", options.name, "layout");
-
+    console.log("refreshed graph layout with", layout.name, "layout");
     return thegraph;
 }
 
-function refreshGraphProps(thegraph) {
-    $("#input-node-count").val(thegraph.data("numNodes") + " nodes");
-    $("#input-edge-count").val(thegraph.data("numEdges") + " edges");
-}
+// function updateNodeLabels(thegraph) {
+//     let selected = thegraph.nodes(":selected");
+//     if (selected.length == 0) {
+//         console.log("Select at least one node");
+//         return thegraph;
+//     }
 
-function refreshGraph(thegraph) {
-    refreshGraphLayout(thegraph);
-    refreshGraphProps(thegraph);
+//     let labels = $("#input-node-label").val().split(";");
+//     selected.map((ele, i) => {
+//         ele.data("label", labels[i].trim());
+//     });
 
-    return thegraph;
-}
+//     // refreshGraph(thegraph);
+//     console.log("updated", selected.length, "node(s) with new labels");
 
-function updateNodeLabels(thegraph) {
-    let selected = thegraph.nodes(":selected");
-    if (selected.length == 0) {
-        console.log("Select at least one node");
-        return thegraph;
-    }
+//     return thegraph;
+// }
 
-    let labels = $("#input-node-label").val().split(";");
-    selected.map((ele, i) => {
-        ele.data("label", labels[i].trim());
-    });
+// function updateNodeColors(thegraph) {
+//     let selected = thegraph.nodes(":selected");
+//     if (selected.length == 0) {
+//         console.log("Select at least one node");
+//         return thegraph;
+//     }
 
-    refreshGraph(thegraph);
-    console.log("updated", selected.length, "node(s) with new labels");
+//     let color = $("#input-node-color").val();
+//     selected.map((ele) => {
+//         ele.data("color", color);
+//     });
 
-    return thegraph;
-}
+//     // refreshGraph(thegraph);
+//     console.log("updated", selected.length, "node(s) with new color");
 
-function updateNodeColors(thegraph) {
-    let selected = thegraph.nodes(":selected");
-    if (selected.length == 0) {
-        console.log("Select at least one node");
-        return thegraph;
-    }
+//     return thegraph;
+// }
 
-    let color = $("#input-node-color").val();
-    selected.map((ele) => {
-        ele.data("color", color);
-    });
+// function updateNodeShapes(thegraph) {
+//     let selected = thegraph.nodes(":selected");
+//     if (selected.length == 0) {
+//         console.log("Select at least one node");
+//         return thegraph;
+//     }
 
-    refreshGraph(thegraph);
-    console.log("updated", selected.length, "node(s) with new color");
+//     let shape = $("#select-node-shape").val();
+//     selected.map((ele) => {
+//         ele.data("shape", shape);
+//     });
 
-    return thegraph;
-}
+//     // refreshGraph(thegraph);
+//     console.log("updated", selected.length, "node(s) with new shape");
 
-function updateNodeShapes(thegraph) {
-    let selected = thegraph.nodes(":selected");
-    if (selected.length == 0) {
-        console.log("Select at least one node");
-        return thegraph;
-    }
+//     return thegraph;
+// }
 
-    let shape = $("#select-node-shape").val();
-    selected.map((ele) => {
-        ele.data("shape", shape);
-    });
+// function updateNodeProps(thegraph, propId) {
+//     let selected = thegraph.nodes(":selected");
+//     if (selected.length == 0) {
+//         console.log("Select at least one node");
+//         return thegraph;
+//     }
 
-    refreshGraph(thegraph);
-    console.log("updated", selected.length, "node(s) with new shape");
+//     let prop = propId.split('-')[2];
+//     switch(prop) {
+//         case "label":
+//             return updateNodeLabels(thegraph);
 
-    return thegraph;
-}
+//         case "color":
+//             return updateNodeColors(thegraph);
 
-function updateNodeProps(thegraph, propId) {
+//         case "shape":
+//             return updateNodeShapes(thegraph);
+
+//         default:
+//             console.log("Invalid property");
+//     };
+        
+//     return thegraph;
+// }
+
+function updateNodesProp(thegraph, propId) {
     let selected = thegraph.nodes(":selected");
     if (selected.length == 0) {
         console.log("Select at least one node");
@@ -345,20 +296,20 @@ function updateNodeProps(thegraph, propId) {
     }
 
     let prop = propId.split('-')[2];
-    switch(prop) {
-        case "label":
-            return updateNodeLabels(thegraph);
+    let value = $(`#${propId}`).val();
 
-        case "color":
-            return updateNodeColors(thegraph);
+    if(prop === "label") {
+        value = value.split(";");
+        selected.map((ele, i) => {
+            ele.data(prop, value[i].trim());
+        });
+    } else {
+        selected.map((ele) => {
+            ele.data(prop, value);
+        });
+    }
 
-        case "shape":
-            return updateNodeShapes(thegraph);
-
-        default:
-            console.log("Invalid property");
-    };
-        
+    console.log("updated", selected.length, "node(s) with new", prop);
     return thegraph;
 }
 
@@ -369,9 +320,5 @@ function updateNodeProps(thegraph, propId) {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 $(document).ready(function () {
-
-    // setInterval(() => {
-    //     console.log("selected nodes", thegraph.nodes(":selected"), "\nselected edges", thegraph.edges(":selected"));
-    //     // console.log("selected edges", thegraph.edges(":selected"));
-    // }, 1000);
+    // do nothing
 });

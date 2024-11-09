@@ -65,11 +65,72 @@ function findMostCommonPropertyValue(prop, eles) {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
+// GRAPH UI FUNCTIONS
+//
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+function refreshGraphFields(thegraph) {
+    $("#input-node-count").val(thegraph.data("numNodes") + " nodes");
+    $("#input-edge-count").val(thegraph.data("numEdges") + " edges");
+}
+
+function refreshGraph(thegraph) {
+    refreshGraphFields(thegraph);
+
+    let layout = getLayoutFields();
+    thegraph = refreshGraphLayout(thegraph, layout);
+
+    return thegraph;
+}
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
 // LAYOUT UI FUNCTIONS
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+function switchLayoutPanel(panel) {
+    $(".layout-properties").addClass("d-none");
+    $(`#${panel}-layout-properties`).removeClass("d-none");
+}
+
+function getLayoutFields() {
+    let name = $("#select-graph-layout").val();
+    let layout = {
+        name: name,
+        
+        animate: true,
+        animationDuration: 500,
+        animationEasing: "ease-in-out",
+    };
+
+    switch (name) {
+        case "circle":
+            layout.radius = parseInt($("#input-circle-radius").val());
+        break;
+
+        case "grid":
+            layout.rows = parseInt($("#input-grid-rows").val());
+            layout.cols = parseInt($("#input-grid-cols").val());
+            layout.condense = $("#input-grid-condensed").is(":checked");
+            layout.spacingFactor = $("#input-grid-condensed").is(":checked") ? 1.5 : 0;
+        break;
+
+        case "concentric":
+            layout.minNodeSpacing = 50;
+        break;
+        
+        default:
+            // do nothing
+        break;
+    }
+
+    return layout;
+}
+
 function clearLayoutFields() {
+    // TODO: Use default values from settings in the future instead of hardcoding
+
     // default layout
     $("#select-graph-layout").val("circle");
 
@@ -134,18 +195,18 @@ function clearNodeFields() {
 }
 
 function updateNodeFields(thegraph) {
-    let selected = thegraph.$("node:selected");
+    let selected = thegraph.nodes(":selected");
 
     if (selected.length === 0) {
         clearNodeFields();
         return;
     }
-
-    let newProps = {
-        label: selected.map((ele) => ele.data("label") ? ele.data("label") : ele.id()).join("; "),
+    
+    setNodeFields({
+        label: selected.map((ele) => ele.data("label") !== undefined ? ele.data("label") : ele.id()).join("; "),
         color: findMostCommonPropertyValue("color", selected) || "#000000",
         shape: findMostCommonPropertyValue("shape", selected) || "ellipse"
-    };
+    });
 
     // $("textarea#input-node-label").val(labels);
     
@@ -154,7 +215,6 @@ function updateNodeFields(thegraph) {
     
     // let shapeToDisplay = findPropMode("shape", selected);
     // $("#select-node-shape").val(shapeToDisplay);
-    setNodeFields(newProps);
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -164,12 +224,28 @@ function updateNodeFields(thegraph) {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 function bindLeftEvents(thegraph) {
-    $("#btn-new-graph").click(function () { thegraph = newGraph(thegraph); });
+    $("#btn-new-graph").click(function () { 
+        thegraph = refreshGraph(thegraph);
+        thegraph = newGraph(thegraph);
+    });
 
-    $("#btn-arrange-graph").click(function () { thegraph = refreshGraphLayout(thegraph); });
-    $("#btn-center-graph").click(function () { thegraph = centerGraph(thegraph); });
-    $("#btn-add-node").click(function () { thegraph = addNode(thegraph); });
-    $("#btn-add-edge").click(function () { thegraph = addEdge(thegraph); });
+    $("#btn-arrange-graph").click(function () { 
+        thegraph = refreshGraph(thegraph); 
+    });
+
+    $("#btn-center-graph").click(function () { 
+        thegraph = centerGraph(thegraph);
+    });
+
+    $("#btn-add-node").click(function () { 
+        thegraph = addNode(thegraph);
+        thegraph = refreshGraph(thegraph);
+    });
+
+    $("#btn-add-edge").click(function () { 
+        thegraph = addEdge(thegraph); 
+        thegraph = refreshGraph(thegraph);
+    });
 
     return thegraph;
 }
@@ -185,7 +261,7 @@ function bindGraphEvents(thegraph) {
     });
 
     thegraph.on('unselect', 'node', function (evt) {
-        if (thegraph.$(':selected').length === 0) {
+        if (thegraph.nodes(':selected').length === 0) {
             $("#node-properties-panel").addClass("d-none");
             clearNodeFields();
 
@@ -203,19 +279,22 @@ function bindGraphEvents(thegraph) {
 function bindRightEvents(thegraph) {
     // LAYOUT PANEL
     $("#select-graph-layout, .circle-properties, .grid-properties").change(function () {
-        if (this.id === "select-graph-layout") {
-            thegraph = refreshGraphLayout(thegraph, $(this).val());
-        } else {
-            thegraph = refreshGraphLayout(thegraph, $("#select-graph-layout").val());
-        }
+        // if (this.id === "select-graph-layout") {
+        //     thegraph = refreshGraphLayout(thegraph, layout);
+        // } else {
+        //     thegraph = refreshGraphLayout(thegraph, $("#select-graph-layout").val());
+        // }
+        
+        let layout = getLayoutFields();
+        switchLayoutPanel(layout.name);
 
-        console.log("updated graph layout");
+        thegraph = refreshGraph(thegraph);
+        console.log("updated graph layout", layout.name);
     });
 
     // NODES PANEL
-
     $("#input-node-label, #input-node-color, #select-node-shape").change(function (evt) {
-        updateNodeProps(thegraph, evt.target.id);
+        updateNodesProp(thegraph, evt.target.id);
         console.log(`changed node(s) ${evt.target.id} to`, $(this).val());
     });
 
