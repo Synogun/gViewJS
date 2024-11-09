@@ -133,7 +133,7 @@ $("#select-graph-layout, .circle-properties, .grid-properties").change(function 
 // NODES PANEL
 
 $("#input-node-label, #input-node-color, #select-node-shape").change(function (evt) {
-    updateNodeProps(thegraph);
+    updateNodeProps(thegraph, evt.target.id);
     console.log(`changed node(s) ${evt.target.id} to`, $(this).val());
 });
 

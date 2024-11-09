@@ -93,11 +93,11 @@ function generateNewGraph() {
         }
     
     });
-};
+}
 
 function newGraph(thegraph) {
     window.location.reload();
-};
+}
 
 function arrangeGraph(thegraph) {
     let selected = thegraph.$(":selected");
@@ -105,7 +105,7 @@ function arrangeGraph(thegraph) {
 
     console.log("arranged graph");
     return thegraph;
-};
+}
 
 function centerGraph(thegraph) {
     let selected = thegraph.$(":selected");
@@ -113,7 +113,7 @@ function centerGraph(thegraph) {
 
     console.log("centered graph on", selected.length > 0 ? "selected eles" : "all nodes");
     return thegraph;
-};
+}
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
@@ -142,7 +142,7 @@ function addNode(thegraph) {
     // console.log(newNode);
 
     return thegraph;
-};
+}
 
 function removeNode(thegraph) {
     let selected = thegraph.nodes(":selected");
@@ -203,7 +203,7 @@ function addEdge(thegraph) {
     refreshGraph(thegraph);
 
     return thegraph;
-};
+}
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
@@ -282,28 +282,84 @@ function refreshGraph(thegraph) {
     return thegraph;
 }
 
-function updateNodeProps(thegraph) {
+function updateNodeLabels(thegraph) {
     let selected = thegraph.nodes(":selected");
     if (selected.length == 0) {
         console.log("Select at least one node");
         return thegraph;
     }
 
-    let labels = $("#input-node-label").val().split("; ");
-    let color = $("#input-node-color").val();
-    let shape = $("#select-node-shape").val();
-
+    let labels = $("#input-node-label").val().split(";");
     selected.map((ele, i) => {
         ele.data("label", labels[i].trim());
+    });
+
+    refreshGraph(thegraph);
+    console.log("updated", selected.length, "node(s) with new labels");
+
+    return thegraph;
+}
+
+function updateNodeColors(thegraph) {
+    let selected = thegraph.nodes(":selected");
+    if (selected.length == 0) {
+        console.log("Select at least one node");
+        return thegraph;
+    }
+
+    let color = $("#input-node-color").val();
+    selected.map((ele) => {
         ele.data("color", color);
+    });
+
+    refreshGraph(thegraph);
+    console.log("updated", selected.length, "node(s) with new color");
+
+    return thegraph;
+}
+
+function updateNodeShapes(thegraph) {
+    let selected = thegraph.nodes(":selected");
+    if (selected.length == 0) {
+        console.log("Select at least one node");
+        return thegraph;
+    }
+
+    let shape = $("#select-node-shape").val();
+    selected.map((ele) => {
         ele.data("shape", shape);
     });
 
     refreshGraph(thegraph);
-    console.log("updated", selected.length, "node(s) with new properties");
+    console.log("updated", selected.length, "node(s) with new shape");
 
     return thegraph;
-};
+}
+
+function updateNodeProps(thegraph, propId) {
+    let selected = thegraph.nodes(":selected");
+    if (selected.length == 0) {
+        console.log("Select at least one node");
+        return thegraph;
+    }
+
+    let prop = propId.split('-')[2];
+    switch(prop) {
+        case "label":
+            return updateNodeLabels(thegraph);
+
+        case "color":
+            return updateNodeColors(thegraph);
+
+        case "shape":
+            return updateNodeShapes(thegraph);
+
+        default:
+            console.log("Invalid property");
+    };
+        
+    return thegraph;
+}
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
