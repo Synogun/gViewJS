@@ -253,6 +253,7 @@ function refreshGraphLayout(thegraph, layout = null) {
         case "preset":
             // no additional options
             updateLayoutOptions("preset");
+        break;
 
         case "random":
             // no additional options
