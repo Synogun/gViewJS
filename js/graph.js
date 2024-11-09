@@ -9,7 +9,7 @@ function generateNewGraph() {
         container: $('#graph'), // container to render in
         
         elements: [], // elements to render
-        data: { numNodes: 0, numEdges: 0 },
+        data: { numNodes: 0, numEdges: 0, removedNodes: [], removedEdges: [] },
     
         style: [ // the stylesheet for the graph
             {
@@ -122,7 +122,7 @@ function centerGraph(thegraph) {
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 function addNode(thegraph) {
-    let newId = `n${thegraph.nodes().length}`;
+    let newId = `n${thegraph.nodes().length + thegraph.data("removedNodes").length}`;
     let newNode = { 
         group: "nodes",
         data: { 
@@ -144,11 +144,27 @@ function addNode(thegraph) {
     return thegraph;
 };
 
-function addEdge(thegraph) {
-    // let source = $("#edge-source").val();
-    // let target = $("#edge-target").val();
-    // let weight = $("#edge-weight").val();
+function removeNode(thegraph) {
+    let selected = thegraph.nodes(":selected");
+    if (selected.length === 0) {
+        console.log("Select at least one node");
+        return thegraph;
+    }
 
+    selected.map((ele) => {
+        thegraph.data("removedNodes").push(ele);
+        thegraph.remove(ele);
+    });
+    thegraph.data("numNodes", thegraph.nodes().length);
+    thegraph.data("numEdges", thegraph.edges().length);
+
+    refreshGraph(thegraph);
+
+    console.log("removed", selected.length, "node(s)");
+    return thegraph;
+}
+
+function addEdge(thegraph) {
     let selected = thegraph.nodes(":selected");
     if (selected.length < 2) {
         console.log("Select at least two nodes");
@@ -170,7 +186,7 @@ function addEdge(thegraph) {
     // all-to-all edges
     for(let i = 0; i < selected.length; i++) {
         for(let j = i; j < selected.length; j++) {
-            if(i == j) continue;
+            if(i === j) continue;
             let source = selected[i].id();
             let target = selected[j].id();
             

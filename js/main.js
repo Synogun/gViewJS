@@ -1,6 +1,6 @@
 // generates the graph and the cytoscape object
 var isDev = false;
-var thegraph = generateNewGraph(false);
+var thegraph = generateNewGraph();
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
@@ -79,14 +79,6 @@ function updateNodeFields() {
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// thegraph.on('unselect', function (evt) {
-//     if (thegraph.$(':selected').length === 0) {
-//         $(".panel").addClass("d-none");
-//         $("#graph-properties-panel").removeClass("d-none");
-//         $("#layout-properties-panel").removeClass("d-none");
-//     }
-// });
-
 thegraph.on('select', 'node', function (evt) {
     $("#graph-properties-panel").addClass("d-none");
     $("#layout-properties-panel").addClass("d-none");
@@ -144,6 +136,8 @@ $("#input-node-label, #input-node-color, #select-node-shape").change(function (e
     updateNodeProps(thegraph);
     console.log(`changed node(s) ${evt.target.id} to`, $(this).val());
 });
+
+$("#btn-delete-node").click(function () { thegraph = removeNode(thegraph); });
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
