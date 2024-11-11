@@ -89,9 +89,9 @@ function refreshGraph(thegraph) {
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-function switchLayoutPanel(panel) {
+function switchLayoutPanel(subpanel) {
     $(".layout-properties").addClass("d-none");
-    $(`#${panel}-layout-properties`).removeClass("d-none");
+    $(`#${subpanel}-layout-properties`).removeClass("d-none");
 }
 
 function getLayoutFields() {
@@ -217,6 +217,31 @@ function updateNodeFields(thegraph) {
     // $("#select-node-shape").val(shapeToDisplay);
 }
 
+function switchPanel(panel) {
+    // $(`#${panel}-properties-panel`).removeClass("d-none");
+    
+    switch (panel) {
+        case "layout":   // fallthrough
+        case "graph":
+            $(".panel").addClass("d-none");
+            $("#graph-properties-panel").removeClass("d-none");
+            $("#layout-properties-panel").removeClass("d-none");
+        break;
+
+        case "node":
+            $("#node-properties-panel").removeClass("d-none");
+        break;
+
+        case "edge":
+            $("#edge-properties-panel").removeClass("d-none");
+        break;
+
+        default:
+            // do nothing
+        break;
+    }
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 // EVENT HANDLERS
@@ -252,21 +277,15 @@ function bindLeftEvents(thegraph) {
 
 function bindGraphEvents(thegraph) {
     thegraph.on('select', 'node', function (evt) {
-        $("#graph-properties-panel").addClass("d-none");
-        $("#layout-properties-panel").addClass("d-none");
-        $("#node-properties-panel").removeClass("d-none");
-
         updateNodeFields(thegraph);
+        switchPanel("node");
         console.log("selected node", evt.target.id());
     });
 
     thegraph.on('unselect', 'node', function (evt) {
         if (thegraph.nodes(':selected').length === 0) {
-            $("#node-properties-panel").addClass("d-none");
-            clearNodeFields();
 
-            $("#graph-properties-panel").removeClass("d-none");
-            $("#layout-properties-panel").removeClass("d-none");
+            switchPanel("graph");
         }
 
         updateNodeFields(thegraph);
@@ -298,7 +317,15 @@ function bindRightEvents(thegraph) {
         console.log(`changed node(s) ${evt.target.id} to`, $(this).val());
     });
 
-    $("#btn-delete-node").click(function () { thegraph = removeNode(thegraph); });
+    $("#btn-delete-node").click(function () {
+        if (thegraph.nodes(':selected').length === 0) {
+            switchPanel("graph");
+        }
+
+        thegraph = removeNode(thegraph); 
+        thegraph = refreshGraph(thegraph);
+        updateNodeFields(thegraph);
+    });
 
     return thegraph;
 }

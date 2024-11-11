@@ -205,7 +205,7 @@ function addEdge(thegraph) {
 function refreshGraphLayout(thegraph, layout) {
     thegraph.layout(layout).run();
     
-    console.log("refreshed graph layout with", layout.name, "layout");
+    // console.log("refreshed graph layout with", layout.name, "layout");
     return thegraph;
 }
 
