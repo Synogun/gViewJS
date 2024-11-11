@@ -324,8 +324,11 @@ function bindRightEvents(thegraph) {
 
     // NODES PANEL
     $("#input-node-label, #input-node-color, #select-node-shape").change(function (evt) {
-        updateNodesProp(thegraph, evt.target.id);
-        console.log(`changed node(s) ${evt.target.id} to`, $(this).val());
+        let val = $(this).val();
+        let prop = $(this).attr("id").replace("input-node-", "").replace("select-node-", "");
+        
+        updateNodesProp(thegraph, prop, val);
+        console.log(`changed node(s) ${prop} to`, $(this).val());
     });
 
     $("#btn-delete-node").click(function () {

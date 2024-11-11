@@ -237,20 +237,20 @@ function refreshGraphLayout(thegraph, layout) {
     return thegraph;
 }
 
-function updateNodesProp(thegraph, propId) {
+function updateNodesProp(thegraph, prop, value) {
     let selected = thegraph.nodes(":selected");
     if (selected.length == 0) {
         console.log("Select at least one node");
         return thegraph;
     }
 
-    let prop = propId.split('-')[2];
-    let value = $(`#${propId}`).val();
+    // let prop = propId.split('-')[2];
+    // let value = $(`#${propId}`).val();
 
     if(prop === "label") {
-        value = value.split(";");
+        let lval = value.split(";");
         selected.map((ele, i) => {
-            ele.data(prop, value[i].trim());
+            ele.data(prop, lval[i].trim());
         });
     } else {
         selected.map((ele) => {
