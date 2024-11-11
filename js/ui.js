@@ -31,21 +31,21 @@ function checkDevelopment() {
  * @returns {*} - The most common property value, or null if no elements are provided or the property is not found.
  */
 function findMostCommonPropertyValue(prop, eles) {
-    // TODO: Use default value from settings in the future instead of null
-    if (eles.length === 0) {
+    if (eles.length === 0) { // no elements
         return null;
     }
     let firstEleData = eles.eq(0).data(prop);
-    if (firstEleData === undefined || firstEleData === null) {
+    if (firstEleData === undefined || firstEleData === null) { // property not found
         return null;
     }
-    if (eles.length === 1) {
+    if (eles.length === 1) { // only one element
         return firstEleData;
     }
 
     let count = {};
     let mode = { prop: firstEleData, count: 0 };
 
+    // count the occurrences of each property value
     eles.forEach((ele) => {
         let val = ele.data(prop);
         if (count[val]) {
@@ -207,33 +207,38 @@ function updateNodeFields(thegraph) {
         color: findMostCommonPropertyValue("color", selected) || "#000000",
         shape: findMostCommonPropertyValue("shape", selected) || "ellipse"
     });
-
-    // $("textarea#input-node-label").val(labels);
-    
-    // let colorToDisplay = findPropMode("color", selected);
-    // $("#input-node-color").val(colorToDisplay);
-    
-    // let shapeToDisplay = findPropMode("shape", selected);
-    // $("#select-node-shape").val(shapeToDisplay);
 }
 
-function switchPanel(panel) {
+function switchPanel(panel, value) {
     // $(`#${panel}-properties-panel`).removeClass("d-none");
     
     switch (panel) {
         case "layout":   // fallthrough
         case "graph":
-            $(".panel").addClass("d-none");
-            $("#graph-properties-panel").removeClass("d-none");
-            $("#layout-properties-panel").removeClass("d-none");
+            // $(".panel").addClass("d-none");
+            if (value) {
+                $(`#graph-properties-panel`).removeClass("d-none");
+                $("#layout-properties-panel").removeClass("d-none");
+            } else {
+                $(`#graph-properties-panel`).addClass("d-none");
+                $("#layout-properties-panel").addClass("d-none");
+            }
         break;
 
         case "node":
-            $("#node-properties-panel").removeClass("d-none");
+            if (value) {
+                $(`#node-properties-panel`).removeClass("d-none");
+            } else {
+                $(`#node-properties-panel`).addClass("d-none");
+            }
         break;
 
         case "edge":
-            $("#edge-properties-panel").removeClass("d-none");
+            if (value) {
+                $(`#edge-properties-panel`).removeClass("d-none");
+            } else {
+                $(`#edge-properties-panel`).addClass("d-none");
+            }
         break;
 
         default:
@@ -276,20 +281,32 @@ function bindLeftEvents(thegraph) {
 }
 
 function bindGraphEvents(thegraph) {
+    // NODE EVENTS
     thegraph.on('select', 'node', function (evt) {
         updateNodeFields(thegraph);
-        switchPanel("node");
+        switchPanel("node", true);
         console.log("selected node", evt.target.id());
     });
 
     thegraph.on('unselect', 'node', function (evt) {
         if (thegraph.nodes(':selected').length === 0) {
-
-            switchPanel("graph");
+            switchPanel("node", false);
         }
-
         updateNodeFields(thegraph);
         console.log("unselected node", evt.target.id());
+    });
+
+    // EDGE EVENTS
+    thegraph.on('select', 'edge', function (evt) {
+        switchPanel("edge", true);
+        console.log("selected edge", evt.target.id());
+    });
+
+    thegraph.on('unselect', 'edge', function (evt) {
+        if (thegraph.edges(':selected').length === 0) {
+            switchPanel("edge", false);
+        }
+        console.log("unselected edge", evt.target.id());
     });
 
     return thegraph;
@@ -298,12 +315,6 @@ function bindGraphEvents(thegraph) {
 function bindRightEvents(thegraph) {
     // LAYOUT PANEL
     $("#select-graph-layout, .circle-properties, .grid-properties").change(function () {
-        // if (this.id === "select-graph-layout") {
-        //     thegraph = refreshGraphLayout(thegraph, layout);
-        // } else {
-        //     thegraph = refreshGraphLayout(thegraph, $("#select-graph-layout").val());
-        // }
-        
         let layout = getLayoutFields();
         switchLayoutPanel(layout.name);
 

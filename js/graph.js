@@ -20,6 +20,9 @@ function generateNewGraph() {
                     'shape': 'data(shape)',
 
                     'font-family': 'Fira Code, sans-serif',
+                    'color': '#fff',
+                    'text-outline-color': '#000',
+                    'text-outline-width': 1,
                     'text-halign': 'center',
                     'text-valign': 'center',
                 }
@@ -44,8 +47,11 @@ function generateNewGraph() {
                 selector: 'edge',
                 style: {
                     'width': 3,
-                    'line-color': '#ccc',
-                    'curve-style': 'bezier',
+                    'line-color': 'data(lineColor)',
+                    'curve-style': 'data(curveStyle)',
+                    'line-style': 'data(lineStyle)',
+
+                    'target-arrow-color': 'data(lineColor)',
 
                     'font-family': 'Fira Code, sans-serif',
                     'color': '#fff',
@@ -54,32 +60,41 @@ function generateNewGraph() {
                 }
             },
             {
-                selector: 'edge[weight > 1]',
+                selector: '.edge-label-weight',
                 style: {
                     'label': 'data(weight)',
                 }
             },
             {
+                selector: '.edge-label-index',
+                style: {
+                    'label': 'data(index)',
+                }
+            },
+            {
                 selector: '.directed',
                 style: {
-                    'target-arrow-color': '#ccc',
-                    'target-arrow-shape': 'triangle',
+                    'target-arrow-shape': 'data(targetArrowShape)',
                 }
             },
             {
                 selector: 'edge:active',
                 style: {
+                    'line-color': '#0169d9',
+                    'target-arrow-color': '#0169d9',
+
+                    'line-outline-width': 2.5,
                     'line-outline-color': '#0169d9',
-                    'line-outline-width': 2,
-                    // 'target-arrow-color': '#0169d9',
-                    // 'target-arrow-shape': 'triangle',
                 }
             },
             {
                 selector: 'edge:selected',
                 style: {
-                    'line-color': '#0169d9',
-                    'target-arrow-color': '#0169d9',
+                    'line-color': 'data(lineColor)',
+                    'target-arrow-color': 'data(lineColor)',
+
+                    'line-outline-width': 2.5,
+                    'line-outline-color': '#0169d9',
                 }
             },
         ],
@@ -151,7 +166,32 @@ function removeNode(thegraph) {
     return thegraph;
 }
 
-function addEdge(thegraph) {
+function addEdge(thegraph, source=null, target=null) {
+    if (source !== null && target !== null) {
+        // TODO: add more properties
+        // TODO: change this to default edge properties from settings instead of hardcoding
+        thegraph.add({
+            group: "edges",
+            data: {
+                id: `edge-${thegraph.edges().length}`,
+                source: source.id(),
+                target: target.id(),
+                weight: 1,
+                index: thegraph.edges().length,
+
+                // Styling
+                labelType: 0,       // 0: none, 1: weight, 2: index
+                lineColor: "#ccc",
+                lineStyle: "solid",
+                curveStyle: "bezier",
+                targetArrowShape: "triangle",
+            }
+        });
+        console.log("added edge with source", source.id(), "and target", target.id());
+        thegraph.data("numEdges", thegraph.edges().length);
+        return thegraph;
+    }
+    
     let selected = thegraph.nodes(":selected");
     if (selected.length < 2) {
         console.log("Select at least two nodes");
@@ -174,25 +214,13 @@ function addEdge(thegraph) {
     for(let i = 0; i < selected.length; i++) {
         for(let j = i; j < selected.length; j++) {
             if(i === j) continue;
-            let source = selected[i].id();
-            let target = selected[j].id();
-            
-            let newEdge = { 
-                group: "edges",
-                data: { 
-                    id: `edge-${thegraph.edges().length}`,
-                    source: source,
-                    target: target,
-                    weight: 1,
-                } 
-            };
+            let source = selected[i];
+            let target = selected[j];
 
-            thegraph.add(newEdge);
-            console.log("added edge with source", source, "and target", target);
+            addEdge(thegraph, source, target);
         }
     }
 
-    thegraph.data("numEdges", thegraph.edges().length);
     return thegraph;
 }
 
@@ -208,85 +236,6 @@ function refreshGraphLayout(thegraph, layout) {
     // console.log("refreshed graph layout with", layout.name, "layout");
     return thegraph;
 }
-
-// function updateNodeLabels(thegraph) {
-//     let selected = thegraph.nodes(":selected");
-//     if (selected.length == 0) {
-//         console.log("Select at least one node");
-//         return thegraph;
-//     }
-
-//     let labels = $("#input-node-label").val().split(";");
-//     selected.map((ele, i) => {
-//         ele.data("label", labels[i].trim());
-//     });
-
-//     // refreshGraph(thegraph);
-//     console.log("updated", selected.length, "node(s) with new labels");
-
-//     return thegraph;
-// }
-
-// function updateNodeColors(thegraph) {
-//     let selected = thegraph.nodes(":selected");
-//     if (selected.length == 0) {
-//         console.log("Select at least one node");
-//         return thegraph;
-//     }
-
-//     let color = $("#input-node-color").val();
-//     selected.map((ele) => {
-//         ele.data("color", color);
-//     });
-
-//     // refreshGraph(thegraph);
-//     console.log("updated", selected.length, "node(s) with new color");
-
-//     return thegraph;
-// }
-
-// function updateNodeShapes(thegraph) {
-//     let selected = thegraph.nodes(":selected");
-//     if (selected.length == 0) {
-//         console.log("Select at least one node");
-//         return thegraph;
-//     }
-
-//     let shape = $("#select-node-shape").val();
-//     selected.map((ele) => {
-//         ele.data("shape", shape);
-//     });
-
-//     // refreshGraph(thegraph);
-//     console.log("updated", selected.length, "node(s) with new shape");
-
-//     return thegraph;
-// }
-
-// function updateNodeProps(thegraph, propId) {
-//     let selected = thegraph.nodes(":selected");
-//     if (selected.length == 0) {
-//         console.log("Select at least one node");
-//         return thegraph;
-//     }
-
-//     let prop = propId.split('-')[2];
-//     switch(prop) {
-//         case "label":
-//             return updateNodeLabels(thegraph);
-
-//         case "color":
-//             return updateNodeColors(thegraph);
-
-//         case "shape":
-//             return updateNodeShapes(thegraph);
-
-//         default:
-//             console.log("Invalid property");
-//     };
-        
-//     return thegraph;
-// }
 
 function updateNodesProp(thegraph, propId) {
     let selected = thegraph.nodes(":selected");
@@ -312,13 +261,3 @@ function updateNodesProp(thegraph, propId) {
     console.log("updated", selected.length, "node(s) with new", prop);
     return thegraph;
 }
-
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
-// READY FUNCTION
-//
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-$(document).ready(function () {
-    // do nothing
-});
