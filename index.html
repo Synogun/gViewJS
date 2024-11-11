@@ -195,7 +195,7 @@
                         </select>
                     </div>
                 </div>
-                <div id="circle-layout-properties" class="layout-properties row m-0 align-items-center d-none">
+                <div id="circle-layout-properties" class="layout-properties row m-0 align-items-center">
                     <div class="col m-0 p-0">
                         <div class="row m-2 px-2">
                             <div class="col p-0">
@@ -254,9 +254,6 @@
                         <label for="input-node-label" class="col-form-label">Label(s)</label>
                         <textarea id="input-node-label" class="form-control" aria-label="With textarea"></textarea>
                     </div>
-                    <!-- <div class="col p-0">
-                        <input type="text" class="form-control" id="input-node-label" title="Change the label(s) of the selected node(s). Semicolon separated">
-                    </div> -->
                 </div>
                 <div class="row m-2 p-0 align-items-center">
                     <div class="col-4 p-0">
@@ -306,6 +303,103 @@
                     </div>
                 </div>
             </div>
+
+            <div id="edge-properties-panel" class="panel m-0 p-0 d-none">
+                <div class="breaker m-2"></div>
+            
+                <div class="row p-0 mx-0">
+                    <h5 class="my-1">Edge(s)</h5>
+                </div>
+                
+                <div class="row m-2 p-0 align-items-center">
+                    <div class="col p-0">
+                        <span>Label(s)</span><br>
+
+                        <div class="col p-0 m-0">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label1" value="hidden" checked>
+                                <label class="form-check-label" for="radio-edge-label1">Hidden</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label2" value="weight">
+                                <label class="form-check-label" for="radio-edge-label2">Weight</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label3" value="index">
+                                <label class="form-check-label" for="radio-edge-label3">Index</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row m-2 p-0 align-items-center">
+                    <div class="col-4 p-0">
+                        <label for="input-edge-color" class="col-form-label">Directed?</label>
+                    </div>
+                    <div class="col p-0">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input radio-edge-directed" type="radio" name="edgeDirectionRadioOptions" id="radio-edge-directed1"
+                                value="false" checked>
+                            <label class="form-check-label" for="radio-edge-directed1">No</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input radio-edge-directed" type="radio" name="edgeDirectionRadioOptions" id="radio-edge-directed2"
+                                value="true">
+                            <label class="form-check-label" for="radio-edge-directed2">Yes</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row m-2 p-0 align-items-center">
+                    <div class="col-4 p-0">
+                        <label for="input-edge-color" class="col-form-label">Color(s)</label>
+                    </div>
+                    <div class="col p-0">
+                        <input type="color" class="form-control" id="input-edge-color"
+                            title="Change the color(s) of the selected edge(s)">
+                    </div>
+                </div>
+
+                <div class="row m-2 p-0 align-items-center">
+                    <div class="col p-0">
+                        <span>Edge(s) Style</span>
+                        <div class="col p-0 m-0">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label1" value="hidden" checked>
+                                <label class="form-check-label" for="radio-edge-label1">Solid</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label2" value="weight">
+                                <label class="form-check-label" for="radio-edge-label2">Dotted</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label3" value="index">
+                                <label class="form-check-label" for="radio-edge-label3">Dashed</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row m-2 p-0 align-items-center">
+                    <div class="col-4 p-0">
+                        <label for="select-edge-curve" class="col-form-label">Curve Style</label>
+                    </div>
+                    <div class="col p-0">
+                        <select id="select-edge-curve" class="form-select" aria-label="Edge's curve style select">
+                            <option value="haystack" title="Change the edge(s) curve style to a bundled straight edges for which loops and compounds are unsupported">Haystack</option>
+                            <option value="straight" title="Change the edge(s) curve style to straight edges with all arrows supported">Straight</option>
+                            <option value="straight-triangle" title="Change the edge(s) curve style to a straight triangle">Straight Triangle</option>
+                            <option value="bezier" title="Change the edge(s) curve style to bundled curved edges" selected>Bezier</option>
+                            <option value="unbundled-bezier" title="Change the edge(s) curve style to curved edges for use with manual control points">Unbundled Bezier</option>
+                            <option value="segments" title="Change the edge(s) curve style to a series of straight lines">Segments</option>
+                            <option value="round-segments" title="Change the edge(s) curve style to a series of straight lines with rounded corners">Round Segments</option>
+                            <option value="taxi" title="Change the edge(s) curve style to right-angled lines, hierarchically bundled">Taxi</option>
+                            <option value="round-taxi" title="Change the edge(s) curve style to right-angled lines, hierarchically bundled, with rounded corners">Round Taxi</option>
+                        </select>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
     </div>
@@ -317,6 +411,7 @@
     <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/dist/cytoscape.min.js"
         integrity="sha256-g+jFSmvsZVv9gd8H32BWScJor2muymel6i2lTqQtrIE=" crossorigin="anonymous"></script>
 
+    <script src="js/ui.js"></script>
     <script src="js/graph.js"></script>
     <script src="js/main.js"></script>
 
