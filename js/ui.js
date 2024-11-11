@@ -324,10 +324,10 @@ function bindRightEvents(thegraph) {
 
     // NODES PANEL
     $("#input-node-label, #input-node-color, #select-node-shape").change(function (evt) {
-        let val = $(this).val();
+        let val = getNodeFields();
         let prop = $(this).attr("id").replace("input-node-", "").replace("select-node-", "");
         
-        updateNodesProp(thegraph, prop, val);
+        updateNodesProp(thegraph, prop, val[prop]);
         console.log(`changed node(s) ${prop} to`, $(this).val());
     });
 
