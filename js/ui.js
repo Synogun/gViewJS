@@ -249,6 +249,63 @@ function updateNodeFields(thegraph) {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
+// EDGE UI FUNCTIONS
+//
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+/**
+ * Retrieves the values from the edge input fields.
+ *
+ * @returns {Object} An object containing the label, color, style, and curve of the edge.
+ * @returns {string} return.label - The label of the edge.
+ * @returns {string} return.color - The color of the edge.
+ * @returns {string} return.style - The style of the edge.
+ * @returns {string} return.curve - The curve type of the edge.
+ */
+function getEdgeFields() {
+    return {
+        label: $(".radio-edge-label:checked").val(),
+        color: $("#input-edge-color").val(),
+        style: $(".radio-edge-style:checked").val(),
+        curve: $("#select-edge-curve").val()
+    };
+}
+
+/**
+ * Sets the edge fields in the UI based on the provided properties.
+ *
+ * @param {Object} props - The properties to set the edge fields.
+ * @param {string} props.label - The label of the edge to be selected.
+ * @param {string} props.color - The color of the edge to be set.
+ * @param {string} props.style - The style of the edge to be selected.
+ * @param {string} props.curve - The curve type of the edge to be set.
+ */
+function setEdgeFields(props) {
+    $(`.radio-edge-label[value="${props.label}"]`).prop("checked", true);
+    $("#input-edge-color").val(props.color);
+    $(`.radio-edge-style[value="${props.style}"]`).prop("checked", true);
+    $("#select-edge-curve").val(props.curve);
+}
+
+/**
+ * Resets the edge fields in the UI to their default values.
+ * 
+ * This function sets the following default values:
+ * - Edge label visibility: hidden
+ * - Edge color: black (#000000)
+ * - Edge style: solid
+ * - Edge curve: bezier
+ */
+function clearEdgeFields() {
+    // TODO: Use default values from settings in the future instead of hardcoding
+    $("#radio-edge-label1").prop("checked", true);
+    $("#input-edge-color").val("#000000");
+    $("#radio-edge-style1").prop("checked", true);
+    $("#select-edge-curve").val("bezier");
+}
+
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
 // EVENT HANDLERS
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
