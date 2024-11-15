@@ -9,7 +9,7 @@ function generateNewGraph() {
         container: $('#graph'), // container to render in
         
         elements: [], // elements to render
-        data: { numNodes: 0, numEdges: 0, removedNodes: [], removedEdges: [] },
+        data: { directed: true, numNodes: 0, numEdges: 0, removedNodes: [], removedEdges: [] },
     
         style: [ // the stylesheet for the graph
             {
@@ -127,7 +127,7 @@ function centerGraph(thegraph) {
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
-// NODES AND EDGES FUNCTIONS
+// NODE FUNCTIONS
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -169,6 +169,12 @@ function removeNode(thegraph) {
     return thegraph;
 }
 
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+// EDGE FUNCTIONS
+//
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 function addEdge(thegraph, source=null, target=null) {
     if (source !== null && target !== null) {
         // TODO: add more properties
@@ -183,12 +189,13 @@ function addEdge(thegraph, source=null, target=null) {
                 index: thegraph.edges().length,
 
                 // Styling
-                labelType: 0,       // 0: none, 1: weight, 2: index
+                labelType: "hidden",       // 0: hidden, 1: weight, 2: index
                 lineColor: "#ccc",
                 lineStyle: "solid",
                 curveStyle: "bezier",
                 targetArrowShape: "triangle",
-            }
+            },
+            classes: thegraph.data("directed") ? ["directed"] : [],
         });
         console.log("added edge with source", source.id(), "and target", target.id());
         thegraph.data("numEdges", thegraph.edges().length);
@@ -201,6 +208,7 @@ function addEdge(thegraph, source=null, target=null) {
         return thegraph;
     }
 
+    // TODO: Add option on settings to choose between sequential and all-to-all edges
     // sequential edges
     // for(let i = 0; i < selected.length; i++) {
     //     let source = selected[i].id();

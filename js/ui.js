@@ -398,6 +398,24 @@ function bindRightEvents(thegraph) {
         updateNodeFields(thegraph);
     });
 
+    // EDGES PANEL
+    $(".radio-edge-label, #input-edge-color, .radio-edge-style, #select-edge-curve").change(function () {
+        let val = getEdgeFields();
+        let prop = $(this).attr("id").replace("input-edge-", "").replace("select-edge-", "").replace("radio-edge-", "");
+        
+        updateEdgesProp(thegraph, prop, val[prop]);
+        console.log(`changed edge(s) ${prop} to`, $(this).val());
+    });
+
+    $("#btn-delete-edge").click(function () {
+        if (thegraph.edges(':selected').length === 0) {
+            switchPanel("graph");
+        }
+
+        thegraph = removeEdge(thegraph); 
+        thegraph = refreshGraph(thegraph);
+    });
+
     return thegraph;
 }
 
