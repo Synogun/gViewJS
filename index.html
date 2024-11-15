@@ -172,6 +172,26 @@
                         <input type="text" class="form-control" id="input-edge-count" value="0 edges" title="Displays the total edge count of the graph" disabled readonly>
                     </div>
                 </div>
+
+                <!-- <div class="breaker m-2"></div> -->
+
+                <!-- <div class="row m-2 px-2 align-items-center">
+                    <div class="col-4 p-0">
+                        <label for="input-edge-color" class="col-form-label">Directed?</label>
+                    </div>
+                    <div class="col p-0">
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input radio-edge-directed" type="radio" name="radio-edge-directed"
+                                id="radio-edge-directed1" value="false" checked>
+                            <label class="form-check-label" for="radio-edge-directed1">No</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input radio-edge-directed" type="radio" name="radio-edge-directed"
+                                id="radio-edge-directed2" value="true">
+                            <label class="form-check-label" for="radio-edge-directed2">Yes</label>
+                        </div>
+                    </div>
+                </div> -->
             </div>
                 
             <div id="layout-properties-panel" class="panel m-0 p-0">
@@ -317,35 +337,17 @@
 
                         <div class="col p-0 m-0">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label1" value="hidden" checked>
+                                <input class="form-check-input radio-edge-label" type="radio" name="radio-edge-label" id="radio-edge-label1" value="hidden" checked>
                                 <label class="form-check-label" for="radio-edge-label1">Hidden</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label2" value="weight">
+                                <input class="form-check-input radio-edge-label" type="radio" name="radio-edge-label" id="radio-edge-label2" value="weight">
                                 <label class="form-check-label" for="radio-edge-label2">Weight</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label3" value="index">
+                                <input class="form-check-input radio-edge-label" type="radio" name="radio-edge-label" id="radio-edge-label3" value="index">
                                 <label class="form-check-label" for="radio-edge-label3">Index</label>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row m-2 p-0 align-items-center">
-                    <div class="col-4 p-0">
-                        <label for="input-edge-color" class="col-form-label">Directed?</label>
-                    </div>
-                    <div class="col p-0">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input radio-edge-directed" type="radio" name="edgeDirectionRadioOptions" id="radio-edge-directed1"
-                                value="false" checked>
-                            <label class="form-check-label" for="radio-edge-directed1">No</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input radio-edge-directed" type="radio" name="edgeDirectionRadioOptions" id="radio-edge-directed2"
-                                value="true">
-                            <label class="form-check-label" for="radio-edge-directed2">Yes</label>
                         </div>
                     </div>
                 </div>
@@ -365,16 +367,16 @@
                         <span>Edge(s) Style</span>
                         <div class="col p-0 m-0">
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label1" value="hidden" checked>
-                                <label class="form-check-label" for="radio-edge-label1">Solid</label>
+                                <input class="form-check-input radio-edge-style" type="radio" name="radio-edge-style" id="radio-edge-style1" value="solid" checked>
+                                <label class="form-check-label" for="radio-edge-style1">Solid</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label2" value="weight">
-                                <label class="form-check-label" for="radio-edge-label2">Dotted</label>
+                                <input class="form-check-input radio-edge-style" type="radio" name="radio-edge-style" id="radio-edge-style2" value="dotted">
+                                <label class="form-check-label" for="radio-edge-style2">Dotted</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input radio-edge-label" type="radio" name="edgeLabelRadioOptions" id="radio-edge-label3" value="index">
-                                <label class="form-check-label" for="radio-edge-label3">Dashed</label>
+                                <input class="form-check-input radio-edge-style" type="radio" name="radio-edge-style" id="radio-edge-style3" value="dashed">
+                                <label class="form-check-label" for="radio-edge-style3">Dashed</label>
                             </div>
                         </div>
                     </div>
@@ -396,6 +398,12 @@
                             <option value="taxi" title="Change the edge(s) curve style to right-angled lines, hierarchically bundled">Taxi</option>
                             <option value="round-taxi" title="Change the edge(s) curve style to right-angled lines, hierarchically bundled, with rounded corners">Round Taxi</option>
                         </select>
+                    </div>
+                </div>
+
+                <div class="row m-2 p-0 align-items-center">
+                    <div class="col p-0">
+                        <button id="btn-delete-edge" class="btn btn-danger w-100">Delete Edge</button>
                     </div>
                 </div>
 
