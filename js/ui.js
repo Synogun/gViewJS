@@ -63,6 +63,44 @@ function findMostCommonPropertyValue(prop, eles) {
     return mode.prop;
 }
 
+function switchPanel(panel, value) {
+    // $(`#${panel}-properties-panel`).removeClass("d-none");
+    
+    switch (panel) {
+        case "layout":   // fallthrough
+        case "graph":
+            // $(".panel").addClass("d-none");
+            if (value) {
+                $(`#graph-properties-panel`).removeClass("d-none");
+                $("#layout-properties-panel").removeClass("d-none");
+            } else {
+                $(`#graph-properties-panel`).addClass("d-none");
+                $("#layout-properties-panel").addClass("d-none");
+            }
+        break;
+
+        case "node":
+            if (value) {
+                $(`#node-properties-panel`).removeClass("d-none");
+            } else {
+                $(`#node-properties-panel`).addClass("d-none");
+            }
+        break;
+
+        case "edge":
+            if (value) {
+                $(`#edge-properties-panel`).removeClass("d-none");
+            } else {
+                $(`#edge-properties-panel`).addClass("d-none");
+            }
+        break;
+
+        default:
+            // do nothing
+        break;
+    }
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 // GRAPH UI FUNCTIONS
@@ -207,44 +245,6 @@ function updateNodeFields(thegraph) {
         color: findMostCommonPropertyValue("color", selected) || "#000000",
         shape: findMostCommonPropertyValue("shape", selected) || "ellipse"
     });
-}
-
-function switchPanel(panel, value) {
-    // $(`#${panel}-properties-panel`).removeClass("d-none");
-    
-    switch (panel) {
-        case "layout":   // fallthrough
-        case "graph":
-            // $(".panel").addClass("d-none");
-            if (value) {
-                $(`#graph-properties-panel`).removeClass("d-none");
-                $("#layout-properties-panel").removeClass("d-none");
-            } else {
-                $(`#graph-properties-panel`).addClass("d-none");
-                $("#layout-properties-panel").addClass("d-none");
-            }
-        break;
-
-        case "node":
-            if (value) {
-                $(`#node-properties-panel`).removeClass("d-none");
-            } else {
-                $(`#node-properties-panel`).addClass("d-none");
-            }
-        break;
-
-        case "edge":
-            if (value) {
-                $(`#edge-properties-panel`).removeClass("d-none");
-            } else {
-                $(`#edge-properties-panel`).addClass("d-none");
-            }
-        break;
-
-        default:
-            // do nothing
-        break;
-    }
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
