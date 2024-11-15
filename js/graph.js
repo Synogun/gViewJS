@@ -1,6 +1,6 @@
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
-// BTNS FUNCTIONS
+// GENERAL FUNCTIONS
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -125,6 +125,13 @@ function centerGraph(thegraph) {
     return thegraph;
 }
 
+function refreshGraphLayout(thegraph, layout) {
+    thegraph.layout(layout).run();
+
+    // console.log("refreshed graph layout with", layout.name, "layout");
+    return thegraph;
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 // NODE FUNCTIONS
@@ -166,6 +173,31 @@ function removeNode(thegraph) {
     thegraph.data("numEdges", thegraph.edges().length);
 
     console.log("removed", selected.length, "node(s)");
+    return thegraph;
+}
+
+function updateNodesProp(thegraph, prop, value) {
+    let selected = thegraph.nodes(":selected");
+    if (selected.length == 0) {
+        console.log("Select at least one node");
+        return thegraph;
+    }
+
+    // let prop = propId.split('-')[2];
+    // let value = $(`#${propId}`).val();
+
+    if (prop === "label") {
+        let lval = value.split(";");
+        selected.map((ele, i) => {
+            ele.data(prop, lval[i].trim());
+        });
+    } else {
+        selected.map((ele) => {
+            ele.data(prop, value);
+        });
+    }
+
+    console.log("updated", selected.length, "node(s) with new", prop);
     return thegraph;
 }
 
@@ -232,43 +264,5 @@ function addEdge(thegraph, source=null, target=null) {
         }
     }
 
-    return thegraph;
-}
-
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-//
-// REFRESH FUNCTIONS
-//
-// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-function refreshGraphLayout(thegraph, layout) {
-    thegraph.layout(layout).run();
-    
-    // console.log("refreshed graph layout with", layout.name, "layout");
-    return thegraph;
-}
-
-function updateNodesProp(thegraph, prop, value) {
-    let selected = thegraph.nodes(":selected");
-    if (selected.length == 0) {
-        console.log("Select at least one node");
-        return thegraph;
-    }
-
-    // let prop = propId.split('-')[2];
-    // let value = $(`#${propId}`).val();
-
-    if(prop === "label") {
-        let lval = value.split(";");
-        selected.map((ele, i) => {
-            ele.data(prop, lval[i].trim());
-        });
-    } else {
-        selected.map((ele) => {
-            ele.data(prop, value);
-        });
-    }
-
-    console.log("updated", selected.length, "node(s) with new", prop);
     return thegraph;
 }
