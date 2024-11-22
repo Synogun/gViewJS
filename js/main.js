@@ -6,13 +6,13 @@
 
 var appVersion = "0.1.0";
 var isDev = false;
+var thegraph = generateNewGraph();
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 $("document").ready(function () {
     $("#app-version").text(appVersion);
 
-    var thegraph = generateNewGraph();
     thegraph = bindLeftEvents(thegraph);
     thegraph = bindGraphEvents(thegraph);
     thegraph = bindRightEvents(thegraph);

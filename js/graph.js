@@ -9,7 +9,7 @@ function generateNewGraph() {
         container: $('#graph'), // container to render in
         
         elements: [], // elements to render
-        data: { directed: true, numNodes: 0, numEdges: 0, removedNodes: [], removedEdges: [] },
+        data: { directed: false, numNodes: 0, numEdges: 0, removedNodes: [], removedEdges: [] },
     
         style: [ // the stylesheet for the graph
             {
@@ -178,7 +178,7 @@ function removeNode(thegraph) {
 
 function updateNodesProp(thegraph, prop, value) {
     let selected = thegraph.nodes(":selected");
-    if (selected.length == 0) {
+    if (selected.length === 0) {
         console.log("Select at least one node");
         return thegraph;
     }
@@ -214,7 +214,7 @@ function addEdge(thegraph, source=null, target=null) {
         thegraph.add({
             group: "edges",
             data: {
-                id: `edge-${thegraph.edges().length}`,
+                id: `edge-${thegraph.edges().length + thegraph.data("removedEdges").length}`,
                 source: source.id(),
                 target: target.id(),
                 weight: 1,
@@ -227,10 +227,14 @@ function addEdge(thegraph, source=null, target=null) {
                 curveStyle: "bezier",
                 targetArrowShape: "triangle",
             },
-            classes: thegraph.data("directed") ? ["directed"] : [],
+            classes: [],
         });
+        // if (thegraph.data("directed")) {
+        //     thegraph.edges().last().addClass("directed");
+        // }
         console.log("added edge with source", source.id(), "and target", target.id());
         thegraph.data("numEdges", thegraph.edges().length);
+
         return thegraph;
     }
     
@@ -264,5 +268,22 @@ function addEdge(thegraph, source=null, target=null) {
         }
     }
 
+    return thegraph;
+}
+
+function removeEdge(thegraph) {
+    let selected = thegraph.edges(":selected");
+    if (selected.length === 0) {
+        console.log("Select at least one edge");
+        return thegraph;
+    }
+
+    selected.map((ele) => {
+        thegraph.data("removedEdges").push(ele);
+        thegraph.remove(ele);
+    });
+    thegraph.data("numEdges", thegraph.edges().length);
+
+    console.log("removed", selected.length, "edge(s)");
     return thegraph;
 }
