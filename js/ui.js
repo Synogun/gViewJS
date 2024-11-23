@@ -284,10 +284,30 @@ function setEdgeFields(props) {
  */
 function clearEdgeFields() {
     // TODO: Use default values from settings in the future instead of hardcoding
-    $("#radio-edge-label1").prop("checked", true);
+    $("#radio-edge-label-1").prop("checked", true);
     $("#input-edge-color").val("#000000");
-    $("#radio-edge-style1").prop("checked", true);
+    $("#radio-edge-style-1").prop("checked", true);
     $("#select-edge-curve").val("bezier");
+}
+
+function updateEdgeFields(thegraph) {
+    let selected = thegraph.edges(":selected");
+
+    if (selected.length === 0) {
+        clearEdgeFields();
+        return false;
+    }
+
+    let val = {
+        label: findMostCommonPropertyValue("label", selected) || "hidden",
+        color: findMostCommonPropertyValue("color", selected) || "#000000",
+        style: findMostCommonPropertyValue("style", selected) || "solid",
+        curve: findMostCommonPropertyValue("curve", selected) || "bezier"
+    };
+    console.log("most common edge properties", val);
+    setEdgeFields(val);
+
+    return true;
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -341,13 +361,14 @@ function bindGraphEvents(thegraph) {
 
     // EDGE EVENTS
     thegraph.on('select', 'edge', function (evt) {
+        updateEdgeFields(thegraph);
         switchPanel("edge");
         console.log("selected edge", evt.target.id());
     });
 
     thegraph.on('unselect', 'edge', function (evt) {
         if (thegraph.edges(':selected').length === 0) {
-            switchPanel("edge");
+            switchPanel("graph");
         }
         console.log("unselected edge", evt.target.id());
     });
@@ -368,9 +389,11 @@ function bindRightEvents(thegraph) {
     // NODES PANEL
     $("#input-node-label, #input-node-color, #select-node-shape").change(function (evt) {
         let val = getNodeFields();
-        let prop = $(this).attr("id").replace("input-node-", "").replace("select-node-", "");
         
-        updateNodesProp(thegraph, prop, val[prop]);
+        // let prop = $(this).attr("id").replace("input-node-", "").replace("select-node-", "");
+        let prop = evt.target.id.split('-')[2];
+        
+        thegraph = updateNodesProp(thegraph, prop, val[prop]);
         console.log(`changed node(s) ${prop} to`, $(this).val());
     });
 
@@ -385,11 +408,12 @@ function bindRightEvents(thegraph) {
     });
 
     // EDGES PANEL
-    $(".radio-edge-label, #input-edge-color, .radio-edge-style, #select-edge-curve").change(function () {
+    $(".radio-edge-label, #input-edge-color, .radio-edge-style, #select-edge-curve").change(function (evt) {
         let val = getEdgeFields();
-        let prop = $(this).attr("id").replace("input-edge-", "").replace("select-edge-", "").replace("radio-edge-", "");
+
+        let prop = evt.target.id.split('-')[2];
         
-        updateEdgesProp(thegraph, prop, val[prop]);
+        thegraph = updateEdgesProp(thegraph, prop, val[prop]);
         console.log(`changed edge(s) ${prop} to`, $(this).val());
     });
 

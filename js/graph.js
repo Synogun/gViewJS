@@ -47,11 +47,11 @@ function generateNewGraph() {
                 selector: 'edge',
                 style: {
                     'width': 3,
-                    'line-color': 'data(lineColor)',
-                    'curve-style': 'data(curveStyle)',
-                    'line-style': 'data(lineStyle)',
+                    'line-color': 'data(color)',
+                    'curve-style': 'data(curve)',
+                    'line-style': 'data(style)',
 
-                    'target-arrow-color': 'data(lineColor)',
+                    'target-arrow-color': 'data(color)',
 
                     'font-family': 'Fira Code, sans-serif',
                     'color': '#fff',
@@ -74,7 +74,7 @@ function generateNewGraph() {
             {
                 selector: '.directed',
                 style: {
-                    'target-arrow-shape': 'data(targetArrowShape)',
+                    'target-arrow-shape': 'data(arrowShape)',
                 }
             },
             {
@@ -90,8 +90,8 @@ function generateNewGraph() {
             {
                 selector: 'edge:selected',
                 style: {
-                    'line-color': 'data(lineColor)',
-                    'target-arrow-color': 'data(lineColor)',
+                    'line-color': 'data(color)',
+                    'target-arrow-color': 'data(color)',
 
                     'line-outline-width': 2.5,
                     'line-outline-color': '#0169d9',
@@ -221,11 +221,11 @@ function addEdge(thegraph, source=null, target=null) {
                 index: thegraph.edges().length,
 
                 // Styling
-                labelType: "hidden",       // 0: hidden, 1: weight, 2: index
-                lineColor: "#ccc",
-                lineStyle: "solid",
-                curveStyle: "bezier",
-                targetArrowShape: "triangle",
+                label: "hidden",       // 0: hidden, 1: weight, 2: index
+                color: "#cccccc",
+                style: "solid",
+                curve: "bezier",
+                arrowShape: "triangle",
             },
             classes: [],
         });
@@ -285,5 +285,28 @@ function removeEdge(thegraph) {
     thegraph.data("numEdges", thegraph.edges().length);
 
     console.log("removed", selected.length, "edge(s)");
+    return thegraph;
+}
+
+function updateEdgesProp(thegraph, prop, value) {
+    let selected = thegraph.edges(":selected");
+    if (selected.length === 0) {
+        console.log("Select at least one edge");
+        return thegraph;
+    }
+
+    if (prop === "label") {
+        selected.map((ele) => {
+            ele.removeClass(`edge-label-${ele.data("label")}`);
+            ele.data("label", value);
+            ele.addClass(`edge-label-${value}`);
+        });
+    } else {
+        selected.map((ele) => {
+            ele.data(prop, value);
+        });
+    }
+
+    console.log("updated", selected.length, "edge(s) with new", prop);
     return thegraph;
 }
