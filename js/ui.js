@@ -370,6 +370,7 @@ function bindGraphEvents(thegraph) {
         if (thegraph.edges(':selected').length === 0) {
             switchPanel("graph");
         }
+        updateEdgeFields(thegraph);
         console.log("unselected edge", evt.target.id());
     });
 
