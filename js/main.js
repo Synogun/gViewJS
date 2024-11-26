@@ -16,7 +16,6 @@ var appVersion = "0.3.0";
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-var appVersion = "0.1.0";
 var isDev = false;
 var thegraph = generateNewGraph();
 
