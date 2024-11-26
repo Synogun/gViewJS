@@ -116,10 +116,11 @@ function newGraph(thegraph) {
 
 function centerGraph(thegraph) {
     let selected = thegraph.$(":selected");
+    let fitPadding = 30;
     
     selected.length > 0 ?
-        thegraph.fit(selected, 100) :
-        thegraph.fit(thegraph.nodes(), 100);
+        thegraph.fit(selected, fitPadding) :
+        thegraph.fit(thegraph.nodes(), fitPadding);
 
     console.log("centered graph on", selected.length > 0 ? "selected eles" : "all nodes");
     return thegraph;
