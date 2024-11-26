@@ -243,6 +243,7 @@ function updateNodeFields(thegraph) {
  * Retrieves the values from the edge input fields.
  *
  * @returns {Object} An object containing the label, color, style, and curve of the edge.
+ * @returns {number} return.weight - The weight of the selected edge(s).
  * @returns {string} return.label - The label of the edge.
  * @returns {string} return.color - The color of the edge.
  * @returns {string} return.style - The style of the edge.
@@ -250,6 +251,7 @@ function updateNodeFields(thegraph) {
  */
 function getEdgeFields() {
     return {
+        weight: $("#input-edge-weight").val(),
         label: $(".radio-edge-label:checked").val(),
         color: $("#input-edge-color").val(),
         style: $(".radio-edge-style:checked").val(),
@@ -261,12 +263,14 @@ function getEdgeFields() {
  * Sets the edge fields in the UI based on the provided properties.
  *
  * @param {Object} props - The properties to set the edge fields.
+ * @param {number} props.weight - The weight of the edge to be set.
  * @param {string} props.label - The label of the edge to be selected.
  * @param {string} props.color - The color of the edge to be set.
  * @param {string} props.style - The style of the edge to be selected.
  * @param {string} props.curve - The curve type of the edge to be set.
  */
 function setEdgeFields(props) {
+    $("#input-edge-weight").val(props.weight);
     $(`.radio-edge-label[value="${props.label}"]`).prop("checked", true);
     $("#input-edge-color").val(props.color);
     $(`.radio-edge-style[value="${props.style}"]`).prop("checked", true);
@@ -277,6 +281,7 @@ function setEdgeFields(props) {
  * Resets the edge fields in the UI to their default values.
  * 
  * This function sets the following default values:
+ * - Edge weight: 1
  * - Edge label visibility: hidden
  * - Edge color: black (#000000)
  * - Edge style: solid
@@ -284,6 +289,7 @@ function setEdgeFields(props) {
  */
 function clearEdgeFields() {
     // TODO: Use default values from settings in the future instead of hardcoding
+    $("#input-edge-weight").val(1);
     $("#radio-edge-label-1").prop("checked", true);
     $("#input-edge-color").val("#000000");
     $("#radio-edge-style-1").prop("checked", true);
@@ -299,12 +305,12 @@ function updateEdgeFields(thegraph) {
     }
 
     let val = {
-        label: findMostCommonPropertyValue("label", selected) || "hidden",
-        color: findMostCommonPropertyValue("color", selected) || "#000000",
-        style: findMostCommonPropertyValue("style", selected) || "solid",
-        curve: findMostCommonPropertyValue("curve", selected) || "bezier"
+        weight: findMostCommonPropertyValue("weight", selected) || 1,
+        label:  findMostCommonPropertyValue("label", selected)  || "hidden",
+        color:  findMostCommonPropertyValue("color", selected)  || "#000000",
+        style:  findMostCommonPropertyValue("style", selected)  || "solid",
+        curve:  findMostCommonPropertyValue("curve", selected)  || "bezier"
     };
-    console.log("most common edge properties", val);
     setEdgeFields(val);
 
     return true;
@@ -409,22 +415,24 @@ function bindRightEvents(thegraph) {
     });
 
     // EDGES PANEL
-    $(".radio-edge-label, #input-edge-color, .radio-edge-style, #select-edge-curve").change(function (evt) {
+    $("#input-edge-weight, .radio-edge-label, #input-edge-color, .radio-edge-style, #select-edge-curve").change(function (evt) {
         let val = getEdgeFields();
 
         let prop = evt.target.id.split('-')[2];
         
         thegraph = updateEdgesProp(thegraph, prop, val[prop]);
+        updateEdgeFields(thegraph);
         console.log(`changed edge(s) ${prop} to`, $(this).val());
     });
 
     $("#btn-delete-edge").click(function () {
         if (thegraph.edges(':selected').length === 0) {
-            switchPanel("edge");
+            switchPanel("graph");
         }
 
         thegraph = removeEdge(thegraph); 
         thegraph = refreshGraph(thegraph);
+        updateEdgeFields(thegraph);
     });
 
     return thegraph;

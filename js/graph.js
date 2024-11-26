@@ -295,6 +295,7 @@ function updateEdgesProp(thegraph, prop, value) {
         return thegraph;
     }
 
+    if (prop === "weight" && value.trim() === "") value = 1;
     if (prop === "label") {
         selected.map((ele) => {
             ele.removeClass(`edge-label-${ele.data("label")}`);
