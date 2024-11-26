@@ -64,7 +64,7 @@ function findMostCommonPropertyValue(prop, eles) {
 }
 
 function switchPanel(panel) {
-    $(`.panel`).addClass("d-none");
+    $('.panel').addClass("d-none");
     
     switch (panel) {
         case "graph":
@@ -225,7 +225,7 @@ function updateNodeFields(thegraph) {
     }
     
     setNodeFields({
-        label: selected.map((ele) => ele.data("label") !== undefined ? ele.data("label") : ele.id()).join("; "),
+        label: selected.map((ele) => ele.data("label") !== undefined ? ele.data("label") : ele.id()).join(" ; "),
         color: findMostCommonPropertyValue("color", selected) || "#000000",
         shape: findMostCommonPropertyValue("shape", selected) || "ellipse"
     });
@@ -358,10 +358,10 @@ function bindGraphEvents(thegraph) {
     });
 
     thegraph.on('unselect', 'node', function (evt) {
+        updateNodeFields(thegraph);
         if (thegraph.nodes(':selected').length === 0) {
             switchPanel("graph");
         }
-        updateNodeFields(thegraph);
         console.log("unselected node", evt.target.id());
     });
 
@@ -373,10 +373,11 @@ function bindGraphEvents(thegraph) {
     });
 
     thegraph.on('unselect', 'edge', function (evt) {
+        updateEdgeFields(thegraph);
+        
         if (thegraph.edges(':selected').length === 0) {
             switchPanel("graph");
         }
-        updateEdgeFields(thegraph);
         console.log("unselected edge", evt.target.id());
     });
 
@@ -396,28 +397,26 @@ function bindRightEvents(thegraph) {
     // NODES PANEL
     $("#input-node-label, #input-node-color, #select-node-shape").change(function (evt) {
         let val = getNodeFields();
-        
-        // let prop = $(this).attr("id").replace("input-node-", "").replace("select-node-", "");
         let prop = evt.target.id.split('-')[2];
         
         thegraph = updateNodesProp(thegraph, prop, val[prop]);
+        updateNodeFields(thegraph);
         console.log(`changed node(s) ${prop} to`, $(this).val());
     });
 
     $("#btn-delete-node").click(function () {
-        if (thegraph.nodes(':selected').length === 0) {
-            switchPanel("node");
-        }
-
         thegraph = removeNode(thegraph); 
         thegraph = refreshGraph(thegraph);
+        
         updateNodeFields(thegraph);
+        if (thegraph.nodes(':selected').length === 0) {
+            switchPanel("graph");
+        }
     });
 
     // EDGES PANEL
     $("#input-edge-weight, .radio-edge-label, #input-edge-color, .radio-edge-style, #select-edge-curve").change(function (evt) {
         let val = getEdgeFields();
-
         let prop = evt.target.id.split('-')[2];
         
         thegraph = updateEdgesProp(thegraph, prop, val[prop]);
@@ -426,13 +425,13 @@ function bindRightEvents(thegraph) {
     });
 
     $("#btn-delete-edge").click(function () {
+        thegraph = removeEdge(thegraph); 
+        thegraph = refreshGraph(thegraph);
+        
+        updateEdgeFields(thegraph);
         if (thegraph.edges(':selected').length === 0) {
             switchPanel("graph");
         }
-
-        thegraph = removeEdge(thegraph); 
-        thegraph = refreshGraph(thegraph);
-        updateEdgeFields(thegraph);
     });
 
     return thegraph;

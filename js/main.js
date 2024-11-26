@@ -4,11 +4,12 @@
 //
 // ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-// 0.1.0 - 2024-10-28 - Initial version
-// 0.2.0 - Node Manipulation
-// 0.3.0 - Edge Manipulation
+// 0.1.0 -> 2024-10-28 - Initial version
+// 0.2.0 -> Node Manipulation
+// 0.3.0 -> Edge Manipulation
+//       -> 0.3.1 -> Bug fixes
 
-var appVersion = "0.3.0";
+var appVersion = "0.3.1";
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
@@ -16,7 +17,6 @@ var appVersion = "0.3.0";
 //
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-var appVersion = "0.1.0";
 var isDev = false;
 var thegraph = generateNewGraph();
 

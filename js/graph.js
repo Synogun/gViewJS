@@ -116,10 +116,11 @@ function newGraph(thegraph) {
 
 function centerGraph(thegraph) {
     let selected = thegraph.$(":selected");
+    let fitPadding = 30;
     
     selected.length > 0 ?
-        thegraph.fit(selected, 100) :
-        thegraph.fit(thegraph.nodes(), 100);
+        thegraph.fit(selected, fitPadding) :
+        thegraph.fit(thegraph.nodes(), fitPadding);
 
     console.log("centered graph on", selected.length > 0 ? "selected eles" : "all nodes");
     return thegraph;
@@ -189,6 +190,7 @@ function updateNodesProp(thegraph, prop, value) {
     if (prop === "label") {
         let lval = value.split(";");
         selected.map((ele, i) => {
+            if (lval[i].trim() === "") lval[i] = ele.id().split('-')[1];
             ele.data(prop, lval[i].trim());
         });
     } else {
