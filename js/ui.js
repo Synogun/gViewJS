@@ -63,6 +63,28 @@ function findMostCommonPropertyValue(prop, eles) {
     return mode.prop;
 }
 
+function switchPanel(panel) {
+    $(`.panel`).addClass("d-none");
+    
+    switch (panel) {
+        case "graph":
+            $(`#graph-properties-panel`).removeClass("d-none");
+        break;
+
+        case "node":
+            $(`#node-properties-panel`).removeClass("d-none");
+        break;
+
+        case "edge":
+            $(`#edge-properties-panel`).removeClass("d-none");
+        break;
+
+        default:
+            console.log("switchPanel: invalid panel", panel);
+        break;
+    }
+}
+
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 //
 // GRAPH UI FUNCTIONS
@@ -199,7 +221,7 @@ function updateNodeFields(thegraph) {
 
     if (selected.length === 0) {
         clearNodeFields();
-        return;
+        return false;
     }
     
     setNodeFields({
@@ -207,44 +229,91 @@ function updateNodeFields(thegraph) {
         color: findMostCommonPropertyValue("color", selected) || "#000000",
         shape: findMostCommonPropertyValue("shape", selected) || "ellipse"
     });
+
+    return true;
 }
 
-function switchPanel(panel, value) {
-    // $(`#${panel}-properties-panel`).removeClass("d-none");
-    
-    switch (panel) {
-        case "layout":   // fallthrough
-        case "graph":
-            // $(".panel").addClass("d-none");
-            if (value) {
-                $(`#graph-properties-panel`).removeClass("d-none");
-                $("#layout-properties-panel").removeClass("d-none");
-            } else {
-                $(`#graph-properties-panel`).addClass("d-none");
-                $("#layout-properties-panel").addClass("d-none");
-            }
-        break;
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+//
+// EDGE UI FUNCTIONS
+//
+// +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-        case "node":
-            if (value) {
-                $(`#node-properties-panel`).removeClass("d-none");
-            } else {
-                $(`#node-properties-panel`).addClass("d-none");
-            }
-        break;
+/**
+ * Retrieves the values from the edge input fields.
+ *
+ * @returns {Object} An object containing the label, color, style, and curve of the edge.
+ * @returns {number} return.weight - The weight of the selected edge(s).
+ * @returns {string} return.label - The label of the edge.
+ * @returns {string} return.color - The color of the edge.
+ * @returns {string} return.style - The style of the edge.
+ * @returns {string} return.curve - The curve type of the edge.
+ */
+function getEdgeFields() {
+    return {
+        weight: $("#input-edge-weight").val(),
+        label: $(".radio-edge-label:checked").val(),
+        color: $("#input-edge-color").val(),
+        style: $(".radio-edge-style:checked").val(),
+        curve: $("#select-edge-curve").val()
+    };
+}
 
-        case "edge":
-            if (value) {
-                $(`#edge-properties-panel`).removeClass("d-none");
-            } else {
-                $(`#edge-properties-panel`).addClass("d-none");
-            }
-        break;
+/**
+ * Sets the edge fields in the UI based on the provided properties.
+ *
+ * @param {Object} props - The properties to set the edge fields.
+ * @param {number} props.weight - The weight of the edge to be set.
+ * @param {string} props.label - The label of the edge to be selected.
+ * @param {string} props.color - The color of the edge to be set.
+ * @param {string} props.style - The style of the edge to be selected.
+ * @param {string} props.curve - The curve type of the edge to be set.
+ */
+function setEdgeFields(props) {
+    $("#input-edge-weight").val(props.weight);
+    $(`.radio-edge-label[value="${props.label}"]`).prop("checked", true);
+    $("#input-edge-color").val(props.color);
+    $(`.radio-edge-style[value="${props.style}"]`).prop("checked", true);
+    $("#select-edge-curve").val(props.curve);
+}
 
-        default:
-            // do nothing
-        break;
+/**
+ * Resets the edge fields in the UI to their default values.
+ * 
+ * This function sets the following default values:
+ * - Edge weight: 1
+ * - Edge label visibility: hidden
+ * - Edge color: black (#000000)
+ * - Edge style: solid
+ * - Edge curve: bezier
+ */
+function clearEdgeFields() {
+    // TODO: Use default values from settings in the future instead of hardcoding
+    $("#input-edge-weight").val(1);
+    $("#radio-edge-label-1").prop("checked", true);
+    $("#input-edge-color").val("#000000");
+    $("#radio-edge-style-1").prop("checked", true);
+    $("#select-edge-curve").val("bezier");
+}
+
+function updateEdgeFields(thegraph) {
+    let selected = thegraph.edges(":selected");
+
+    if (selected.length === 0) {
+        clearEdgeFields();
+        return false;
     }
+
+    let val = {
+        weight: findMostCommonPropertyValue("weight", selected) || 1,
+        label:  findMostCommonPropertyValue("label", selected)  || "hidden",
+        color:  findMostCommonPropertyValue("color", selected)  || "#000000",
+        style:  findMostCommonPropertyValue("style", selected)  || "solid",
+        curve:  findMostCommonPropertyValue("curve", selected)  || "bezier"
+    };
+    setEdgeFields(val);
+
+    return true;
 }
 
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -284,13 +353,13 @@ function bindGraphEvents(thegraph) {
     // NODE EVENTS
     thegraph.on('select', 'node', function (evt) {
         updateNodeFields(thegraph);
-        switchPanel("node", true);
+        switchPanel("node");
         console.log("selected node", evt.target.id());
     });
 
     thegraph.on('unselect', 'node', function (evt) {
         if (thegraph.nodes(':selected').length === 0) {
-            switchPanel("node", false);
+            switchPanel("graph");
         }
         updateNodeFields(thegraph);
         console.log("unselected node", evt.target.id());
@@ -298,14 +367,16 @@ function bindGraphEvents(thegraph) {
 
     // EDGE EVENTS
     thegraph.on('select', 'edge', function (evt) {
-        switchPanel("edge", true);
+        updateEdgeFields(thegraph);
+        switchPanel("edge");
         console.log("selected edge", evt.target.id());
     });
 
     thegraph.on('unselect', 'edge', function (evt) {
         if (thegraph.edges(':selected').length === 0) {
-            switchPanel("edge", false);
+            switchPanel("graph");
         }
+        updateEdgeFields(thegraph);
         console.log("unselected edge", evt.target.id());
     });
 
@@ -325,20 +396,43 @@ function bindRightEvents(thegraph) {
     // NODES PANEL
     $("#input-node-label, #input-node-color, #select-node-shape").change(function (evt) {
         let val = getNodeFields();
-        let prop = $(this).attr("id").replace("input-node-", "").replace("select-node-", "");
         
-        updateNodesProp(thegraph, prop, val[prop]);
+        // let prop = $(this).attr("id").replace("input-node-", "").replace("select-node-", "");
+        let prop = evt.target.id.split('-')[2];
+        
+        thegraph = updateNodesProp(thegraph, prop, val[prop]);
         console.log(`changed node(s) ${prop} to`, $(this).val());
     });
 
     $("#btn-delete-node").click(function () {
         if (thegraph.nodes(':selected').length === 0) {
-            switchPanel("graph");
+            switchPanel("node");
         }
 
         thegraph = removeNode(thegraph); 
         thegraph = refreshGraph(thegraph);
         updateNodeFields(thegraph);
+    });
+
+    // EDGES PANEL
+    $("#input-edge-weight, .radio-edge-label, #input-edge-color, .radio-edge-style, #select-edge-curve").change(function (evt) {
+        let val = getEdgeFields();
+
+        let prop = evt.target.id.split('-')[2];
+        
+        thegraph = updateEdgesProp(thegraph, prop, val[prop]);
+        updateEdgeFields(thegraph);
+        console.log(`changed edge(s) ${prop} to`, $(this).val());
+    });
+
+    $("#btn-delete-edge").click(function () {
+        if (thegraph.edges(':selected').length === 0) {
+            switchPanel("graph");
+        }
+
+        thegraph = removeEdge(thegraph); 
+        thegraph = refreshGraph(thegraph);
+        updateEdgeFields(thegraph);
     });
 
     return thegraph;
