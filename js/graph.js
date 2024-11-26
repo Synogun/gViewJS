@@ -189,6 +189,7 @@ function updateNodesProp(thegraph, prop, value) {
     if (prop === "label") {
         let lval = value.split(";");
         selected.map((ele, i) => {
+            if (lval[i].trim() === "") lval[i] = ele.id().split('-')[1];
             ele.data(prop, lval[i].trim());
         });
     } else {

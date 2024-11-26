@@ -225,7 +225,7 @@ function updateNodeFields(thegraph) {
     }
     
     setNodeFields({
-        label: selected.map((ele) => ele.data("label") !== undefined ? ele.data("label") : ele.id()).join("; "),
+        label: selected.map((ele) => ele.data("label") !== undefined ? ele.data("label") : ele.id()).join(" ; "),
         color: findMostCommonPropertyValue("color", selected) || "#000000",
         shape: findMostCommonPropertyValue("shape", selected) || "ellipse"
     });
